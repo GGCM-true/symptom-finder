@@ -1,0 +1,22 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: triage-api
+  datasource:
+    url: jdbc:mysql://localhost:3306/shengyi_triage?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    # ⚠️ 改成你本机 MySQL root 的真实密码；也可通过环境变量 DB_PASSWORD 注入（推荐，避免把密码写进代码库）
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jackson:
+    time-zone: Asia/Shanghai
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    com.shengyi.triage.mapper: info

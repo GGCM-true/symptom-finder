@@ -111,6 +111,87 @@
   footer b{color:var(--ink-2);font-weight:500}
   .kbd-tip{display:inline-block;border:1px solid var(--line);border-radius:4px;padding:0 5px;font-size:11px;background:#f7f9f8;color:var(--ink-3)}
 
+  /* ===== 组合分诊 ===== */
+  .combo-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:12px}
+  .combo-h{font-size:15px;font-weight:600;color:var(--teal-deep);display:flex;align-items:center;gap:6px;margin-bottom:4px}
+  .combo-h::before{content:"";width:3px;height:15px;border-radius:2px;background:var(--teal)}
+  .combo-sub{font-size:12.5px;color:var(--ink-2);line-height:1.7;margin-bottom:10px}
+  .pickwrap{position:relative}
+  #comboQ{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:10px 13px;font-size:15px;background:#fff;outline:none;transition:border .15s}
+  #comboQ:focus{border-color:var(--teal)}
+  .pick-sug{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(15,45,35,.10);z-index:30;max-height:230px;overflow:auto;display:none}
+  .pick-sug.show{display:block}
+  .ps-item{padding:9px 13px;font-size:13.5px;cursor:pointer;border-bottom:1px solid #f1f5f3;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+  .ps-item:last-child{border-bottom:none}
+  .ps-item:hover{background:#f0f5f3}
+  .ps-item .d{font-size:12px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ps-item.added{opacity:.55}
+  .cats{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 2px}
+  .cat-chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:2px 10px;font-size:12px;cursor:pointer;color:var(--ink-2);transition:all .12s}
+  .cat-chip.on{background:var(--teal);border-color:var(--teal);color:#fff}
+  .pick-list{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px;max-height:192px;overflow:auto;padding:2px}
+  .pick-chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:3px 11px;font-size:12.5px;cursor:pointer;color:var(--ink);transition:all .12s}
+  .pick-chip:hover{border-color:var(--teal);color:var(--teal)}
+  .pick-chip.sel{background:var(--teal);color:#fff;border-color:var(--teal)}
+  .selbox{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:12px;padding-top:11px;border-top:1px dashed var(--line)}
+  .selbox .lbl{font-size:12px;color:var(--ink-3);margin-right:2px}
+  .sel-chip{background:var(--teal-soft);color:var(--teal-deep);border-radius:999px;padding:3px 8px 3px 11px;font-size:12.5px;display:inline-flex;align-items:center;gap:5px}
+  .sel-chip b{cursor:pointer;font-weight:400;color:var(--teal);padding:0 3px;font-size:15px;line-height:1}
+  .sel-chip b:hover{color:var(--red)}
+  .calc-row{margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .btn-teal{border:none;border-radius:11px;background:var(--teal);color:#fff;padding:10px 22px;font-size:14px;cursor:pointer}
+  .btn-teal:hover{background:var(--teal-deep)}
+  .btn-teal:disabled{opacity:.4;cursor:not-allowed}
+  .btn-gh{border:1px solid var(--line);background:#fff;color:var(--ink-2);border-radius:11px;padding:10px 18px;font-size:14px;cursor:pointer}
+  .btn-gh:hover{border-color:var(--teal);color:var(--teal)}
+  .combo-count{font-size:12px;color:var(--ink-3)}
+  .combo-hint{font-size:12px;color:var(--ink-3);margin-top:6px}
+  /* 结果 */
+  .rc{border:1px solid var(--line);border-radius:var(--radius);background:#fff;padding:13px 14px;margin-bottom:10px;border-left:4px solid var(--line)}
+  .rc.first{border-left-color:var(--teal);box-shadow:0 2px 10px rgba(15,110,86,.07)}
+  .rc.warn-lv{border-left-color:var(--amber-line)}
+  .rc.danger-lv{border-left-color:var(--red-line)}
+  .rc-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .rc-name{font-size:15px;font-weight:600;color:var(--ink)}
+  .rc-badge{background:var(--teal-soft);color:var(--teal-deep);font-size:11.5px;border-radius:6px;padding:1px 7px}
+  .rc-score{margin-left:auto;font-size:12px;color:var(--ink-3)}
+  .rc-score b{color:var(--teal-deep);font-size:15px}
+  .rc-matches{font-size:12.5px;color:var(--ink-2);margin-top:6px;line-height:1.8}
+  .rc-matches .m-chip{display:inline-block;background:#f2f6f4;border:1px solid #e4e9e7;border-radius:6px;padding:0 7px;margin-right:4px;font-size:12px;color:var(--ink-2)}
+  .rc-gh{display:inline-block;margin-top:8px;font-size:12.5px;color:var(--teal);text-decoration:none;border:1px solid var(--teal);border-radius:8px;padding:3px 10px}
+  .rc-gh:hover{background:var(--teal);color:#fff}
+  .rc-note{font-size:12px;color:var(--ink-3);margin-top:6px;line-height:1.7}
+  .rc-empty{background:#fff;border:1px dashed var(--line);border-radius:var(--radius);padding:26px 16px;text-align:center;font-size:13px;color:var(--ink-3)}
+  .ov-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+  .ov-head .tt{font-size:14px;font-weight:600;color:var(--teal-deep)}
+
+  /* ===== 人体部位点选 ===== */
+  .bm-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:14px;overflow:hidden}
+  .bm-head{display:flex;align-items:center;gap:8px;padding:12px 14px;cursor:pointer;user-select:none;font-size:14px;font-weight:500;color:var(--teal-deep)}
+  .bm-head:hover{background:#fafcfb}
+  .bm-head .arrow{margin-left:auto;color:var(--ink-3);transition:transform .2s;font-size:12px}
+  .bm-card.open .bm-head .arrow{transform:rotate(180deg)}
+  .bm-body{display:none;padding:2px 14px 14px}
+  .bm-card.open .bm-body{display:block}
+  .bm-wrap{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
+  .bm-fig{flex:none;width:190px;margin:0 auto}
+  .bm-fig svg{display:block;width:100%;height:auto}
+  .bm-panel{flex:1;min-width:220px}
+  .bm-panel .bm-tip{font-size:12.5px;color:var(--ink-2);line-height:1.7;margin-bottom:8px}
+  .bm-panel .bm-cur{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:8px;min-height:20px}
+  .bm-panel .bm-cur .sub{font-size:12px;color:var(--ink-3);font-weight:400}
+  .bm-chips{display:flex;flex-wrap:wrap;gap:6px}
+  .bm-chips .chip{margin:0}
+  .bm-part{cursor:pointer;transition:fill .15s, stroke .15s}
+  .bm-part:hover{fill:#BFD9CE !important;stroke:#0F6E56 !important;stroke-width:2px}
+  .bm-part.on{fill:#C9E3D6 !important;stroke:#0F6E56 !important;stroke-width:2.5px}
+  .bm-skin{fill:#DEEAE4;stroke:#B7CCC3;stroke-width:1}
+  .bm-feature{fill:#C8DCD2;stroke:#B7CCC3;stroke-width:1}
+  .bm-quick{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;padding-top:10px;border-top:1px dashed var(--line)}
+  .bm-q{border:1px solid var(--line);background:#fff;border-radius:999px;padding:2px 10px;font-size:12px;cursor:pointer;color:var(--ink-2)}
+  .bm-q:hover{border-color:var(--teal);color:var(--teal)}
+  .bm-q.on{background:var(--teal);border-color:var(--teal);color:#fff}
+
   /* 诊断反查弹层 */
   .overlay{position:fixed;inset:0;background:rgba(15,40,30,.42);display:none;align-items:flex-end;justify-content:center;z-index:60}
   .overlay.show{display:flex}
@@ -159,11 +240,26 @@
   <nav data-page-node-id="VYv5fprG0IT78zI4fMZzXP">
     <div class="tab on" data-view="search" id="tabSearch" data-page-node-id="6rxr0El5MtuiBF4x97dkM7">症状查询</div>
     <div class="tab" data-view="depts" id="tabDepts" data-page-node-id="FvthAqZgdnXoRBzBtTG7Yu">科室浏览</div>
+    <div class="tab" data-view="combo" id="tabCombo">组合分诊</div>
   </nav>
 </header>
 
 <main class="wrap" data-page-node-id="AL9uOjz56FpVmApoUVkh1z">
   <section id="viewSearch" data-page-node-id="JT44YD4wCKBkvRvgv3FYGI">
+    <div class="bm-card" id="bmCard">
+      <div class="bm-head" id="bmHead">🧍 按身体部位找症状 <span class="arrow">▾</span></div>
+      <div class="bm-body" id="bmBody">
+        <div class="bm-wrap">
+          <div class="bm-fig" id="bmSvg"></div>
+          <div class="bm-panel">
+            <div class="bm-tip">点击左侧人体部位（或下方快捷部位），查看该部位常见的症状，再点具体症状即可查询对应的科室建议。</div>
+            <div class="bm-cur" id="bmCur">点击部位查看该部位常见症状</div>
+            <div class="bm-chips" id="bmChips"></div>
+            <div class="bm-quick" id="bmQuick"></div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="searchbox" data-page-node-id="pp5dCBg8ew2pAOKMbUoMyh">
       <div class="srow" data-page-node-id="BGZ6caQoquJUJ9kNCyCsY0">
         <input id="q" type="search" placeholder="输入症状，如：肚子不舒服、发烧、拉肚子…" autocomplete="off" enterkeyhint="search" data-page-node-id="lJb0GbAGY9QiFKHI3NzCXx">
@@ -179,6 +275,26 @@
   <section id="viewDepts" style="display:none" data-page-node-id="Ht0GbRZUOPCEhV0iz8Ypy0">
     <div class="statline" style="margin-bottom:14px" id="deptStat" data-page-node-id="LUMfo24KHIABIR70cX4ACz"></div>
     <div id="deptList" data-page-node-id="jYDmkF1Do9xLBVUI8Wb8zd"></div>
+  </section>
+
+  <section id="viewCombo" style="display:none">
+    <div class="combo-card">
+      <div class="combo-h">多症状组合分诊</div>
+      <div class="combo-sub">现实中不适往往不止一个症状。请从下方列表挑选你（或家人）同时出现的症状，系统会综合各症状的首诊/备选科室与诊断关联，给出一个综合性的挂号建议。选中 2 个以上症状效果最佳。</div>
+      <div class="pickwrap">
+        <input id="comboQ" type="search" placeholder="🔍 输入关键词快速筛选症状（如：发热、咳嗽、失眠…）" autocomplete="off">
+        <div class="pick-sug" id="comboSug"></div>
+      </div>
+      <div class="cats" id="comboCats"></div>
+      <div class="pick-list" id="comboList"></div>
+      <div class="selbox" id="comboSelBox"><span class="lbl">已选：</span><span class="combo-count" id="comboSelCount">尚未选择症状</span></div>
+      <div class="calc-row">
+        <button class="btn-teal" id="comboCalc" disabled>开始分诊分析</button>
+        <button class="btn-gh" id="comboClear">清空</button>
+        <span class="combo-hint">分诊算法：首诊科室 +3 分、备选科室 +1 分、与已选症状共享同一诊断 +1 分。</span>
+      </div>
+    </div>
+    <div id="comboResult"></div>
   </section>
 </main>
 
@@ -513,14 +629,17 @@
   /* ---------- Tab 切换 ---------- */
   function switchTo(view){
     document.getElementById("viewSearch").style.display = view==="search" ? "" : "none";
-    document.getElementById("viewDepts").style.display = view==="depts" ? "" : "none";
+    document.getElementById("viewDepts").style.display  = view==="depts"  ? "" : "none";
+    document.getElementById("viewCombo").style.display  = view==="combo"  ? "" : "none";
     document.getElementById("tabSearch").className = "tab"+(view==="search"?" on":"");
-    document.getElementById("tabDepts").className = "tab"+(view==="depts"?" on":"");
+    document.getElementById("tabDepts").className  = "tab"+(view==="depts"?" on":"");
+    document.getElementById("tabCombo").className  = "tab"+(view==="combo"?" on":"");
   }
   document.querySelectorAll(".tab").forEach(function(t){
     t.addEventListener("click", function(){
       switchTo(t.getAttribute("data-view"));
       if(t.getAttribute("data-view")==="depts") renderDepts();
+      if(t.getAttribute("data-view")==="combo") renderCombo();
     });
   });
 
@@ -533,6 +652,319 @@
     window.scrollTo({top:0, behavior:"smooth"});
   }
   document.getElementById("brandHome").addEventListener("click", goHome);
+
+  /* ================= 组合分诊 ================= */
+  var comboEl = {
+    q: document.getElementById("comboQ"),
+    sug: document.getElementById("comboSug"),
+    cats: document.getElementById("comboCats"),
+    list: document.getElementById("comboList"),
+    selBox: document.getElementById("comboSelBox"),
+    count: document.getElementById("comboSelCount"),
+    calc: document.getElementById("comboCalc"),
+    clear: document.getElementById("comboClear"),
+    result: document.getElementById("comboResult")
+  };
+  var selIds = {};          // 已选 entry id → 1
+  var selOrder = [];        // 保持选择顺序
+  var comboCat = "__all__";
+  var comboAll = D.entries.filter(function(en){ return en.level && (en.level==="green"||en.level==="yellow"||en.level==="red"); });
+
+  function comboCatNames(){
+    var order=[], seen={};
+    comboAll.forEach(function(en){ if(!seen[en.cat]){ seen[en.cat]=1; order.push(en.cat); } });
+    return order;
+  }
+  function renderCombo(){
+    renderComboCats();
+    renderComboPickList();
+    renderComboSelBox();
+  }
+  function renderComboCats(){
+    var html = '<span class="cat-chip'+(comboCat==="__all__"?" on":"")+'" data-cat="__all__">全部（'+comboAll.length+'）</span>';
+    comboCatNames().forEach(function(c){
+      var n = comboAll.filter(function(e){return e.cat===c;}).length;
+      html += '<span class="cat-chip'+(comboCat===c?" on":"")+'" data-cat="'+esc(c)+'">'+esc(c)+'（'+n+'）</span>';
+    });
+    comboEl.cats.innerHTML = html;
+  }
+  function comboFiltered(){
+    if(comboCat==="__all__") return comboAll;
+    return comboAll.filter(function(en){ return en.cat===comboCat; });
+  }
+  function renderComboPickList(){
+    var list = comboFiltered();
+    var html = list.map(function(en){
+      return '<span class="pick-chip'+(selIds[en.id]?" sel":"")+'" data-id="'+esc(en.id)+'" data-name="'+esc(en.name)+'" title="'+esc(en.dept)+'">'+esc(en.name)+'</span>';
+    }).join('');
+    comboEl.list.innerHTML = html || '<span style="font-size:12.5px;color:var(--ink-3)">该分类暂无可选项</span>';
+  }
+  function toggleSel(id){
+    var en = null;
+    for(var i=0;i<comboAll.length;i++) if(comboAll[i].id===id){ en=comboAll[i]; break; }
+    if(!en) return;
+    if(selIds[id]){ delete selIds[id]; selOrder = selOrder.filter(function(x){return x!==id;}); }
+    else{ selIds[id]=1; selOrder.push(id); }
+    renderComboPickList();
+    renderComboSelBox();
+  }
+  function renderComboSelBox(){
+    if(!selOrder.length){
+      comboEl.selBox.innerHTML = '<span class="lbl">已选：</span><span class="combo-count" id="comboSelCount">尚未选择症状</span>';
+      comboEl.calc.disabled = true;
+      return;
+    }
+    var chips = selOrder.map(function(id){
+      var en = null;
+      for(var i=0;i<comboAll.length;i++) if(comboAll[i].id===id){ en=comboAll[i]; break; }
+      if(!en) return "";
+      return '<span class="sel-chip">'+esc(en.name)+'<b data-del="'+esc(id)+'" title="移除">×</b></span>';
+    }).join("");
+    comboEl.selBox.innerHTML = '<span class="lbl">已选：</span>'+chips+'<span class="combo-count">（'+selOrder.length+' 个）</span>';
+    comboEl.calc.disabled = selOrder.length < 1;
+  }
+  // 分类筛选
+  comboEl.cats.addEventListener("click", function(ev){
+    var el = ev.target.closest ? ev.target.closest(".cat-chip") : null;
+    if(!el || !el.getAttribute("data-cat")) return;
+    comboCat = el.getAttribute("data-cat");
+    renderComboCats();
+    renderComboPickList();
+  });
+  // 点击症状 chip 选择/取消
+  comboEl.list.addEventListener("click", function(ev){
+    var el = ev.target.closest ? ev.target.closest(".pick-chip") : null;
+    if(!el || !el.getAttribute("data-id")) return;
+    toggleSel(el.getAttribute("data-id"));
+  });
+  // 已选框内 × 移除
+  comboEl.selBox.addEventListener("click", function(ev){
+    var el = ev.target.closest ? ev.target.closest("b[data-del]") : null;
+    if(!el || !el.getAttribute("data-del")) return;
+    var id = el.getAttribute("data-del");
+    delete selIds[id]; selOrder = selOrder.filter(function(x){return x!==id;});
+    renderComboPickList();
+    renderComboSelBox();
+  });
+  comboEl.clear.addEventListener("click", function(){
+    selIds = {}; selOrder = [];
+    renderComboPickList(); renderComboSelBox();
+    comboEl.result.innerHTML = "";
+  });
+  // 快速筛选联想
+  function renderComboSug(v){
+    if(!v){ comboEl.sug.className="pick-sug"; return; }
+    var res = searchEntries(v);
+    var html = res.list.slice(0,8).map(function(it){
+      return '<div class="ps-item'+(selIds[it.en.id]?" added":"")+'" data-id="'+esc(it.en.id)+'" data-name="'+esc(it.en.name)+'"><span>'+esc(it.en.name)+'</span><span class="d">'+esc(it.en.dept)+'</span></div>';
+    }).join("");
+    comboEl.sug.innerHTML = html || '<div class="ps-item" style="color:var(--ink-3)">无匹配症状，换个说法试试</div>';
+    comboEl.sug.className = "pick-sug show";
+  }
+  var comboDeb = null;
+  comboEl.q.addEventListener("input", function(){
+    clearTimeout(comboDeb);
+    var v = this.value;
+    comboDeb = setTimeout(function(){ renderComboSug(v); }, 100);
+  });
+  comboEl.sug.addEventListener("click", function(ev){
+    var item = ev.target.closest ? ev.target.closest(".ps-item") : null;
+    if(!item || !item.getAttribute("data-id")) return;
+    var id = item.getAttribute("data-id");
+    if(!selIds[id]){ selIds[id]=1; selOrder.push(id); }
+    comboEl.q.value = "";
+    comboEl.sug.className="pick-sug";
+    renderComboPickList(); renderComboSelBox();
+  });
+  document.addEventListener("click", function(ev){
+    if(!comboEl.sug.contains(ev.target) && ev.target!==comboEl.q) comboEl.sug.className="pick-sug";
+  });
+
+  /* 分诊分析 */
+  function dxShared(a, b){
+    var i, j, pa, pb;
+    for(i=0;i<a.diagnoses.length;i++){
+      pa = dxBase(a.diagnoses[i]); if(!pa) continue;
+      for(j=0;j<b.diagnoses.length;j++){
+        pb = dxBase(b.diagnoses[j]); if(!pb) continue;
+        if(pa===pb || (pa.length>=2 && pb.length>=2 && (pa.indexOf(pb)>-1 || pb.indexOf(pa)>-1))) return true;
+      }
+    }
+    return false;
+  }
+  comboEl.calc.addEventListener("click", function(){
+    if(!selOrder.length) return;
+    var chosen = selOrder.map(function(id){
+      for(var i=0;i<comboAll.length;i++) if(comboAll[i].id===id) return comboAll[i];
+      return null;
+    }).filter(Boolean);
+
+    /* ① 红色急症单独提示（直接推荐急诊，不进普通科室排行） */
+    var redList = chosen.filter(function(en){ return en.level==="red"; });
+    var normal  = chosen.filter(function(en){ return en.level!=="red"; });
+
+    /* ② 科室加权 */
+    var score = {};   // key -> {s, n:[entry], lv}
+    function addDept(key, en, w){
+      if(!key) return;
+      if(!score[key]) score[key] = {s:0, ens:{}, lv:"green"};
+      score[key].s += w;
+      score[key].ens[en.id] = en.name;
+      var rank = {red:3, yellow:2, green:1};
+      if(rank[en.level] > rank[score[key].lv]) score[key].lv = en.level;
+    }
+    normal.forEach(function(en){
+      addDept(keyOf(en.dept), en, 3);
+      (en.alts||[]).forEach(function(a){ addDept(keyOf(a), en, 1); });
+    });
+    /* ③ 共享诊断加分：两症状都怀疑同一疾病 → 该疾病对口科室更值得去 */
+    normal.forEach(function(en, idx){
+      for(var k=idx+1; k<normal.length; k++){
+        if(dxShared(en, normal[k])){
+          addDept(keyOf(en.dept), en, 1);
+          addDept(keyOf(normal[k].dept), normal[k], 1);
+        }
+      }
+    });
+
+    var ranked = Object.keys(score).map(function(k){
+      var dp = null;
+      for(var i=0;i<D.departments.length;i++) if(D.departments[i].key===k) dp=D.departments[i];
+      return {key:k, name: dp?dp.name:k, score:score[k].s, ens:score[k].ens, lv:score[k].lv};
+    }).sort(function(a,b){ return b.score-a.score || Object.keys(b.ens).length-Object.keys(a.ens).length; });
+
+    var html = "";
+    /* 急诊红色横幅 */
+    if(redList.length){
+      html += '<div class="rc danger-lv" style="margin-bottom:12px"><div class="rc-top">'+
+              '<span class="pill lv-red">立即急诊</span><span class="rc-name" style="color:var(--red-tx)">存在急危征兆，请优先考虑急诊</span></div>'+
+              '<div class="rc-matches">以下已选症状属于需要立即评估的情况：'+redList.map(function(en){ return '<span class="m-chip">'+esc(en.name)+'</span>'; }).join('')+'</div>'+
+              '<div class="rc-note">请勿按普通门诊排队等待；直接前往急诊医学科（急救中心），必要时拨打 120。其余非急症症状可在处理完急症后择期就诊。</div>'+
+              '<a class="rc-gh" href="guahao.html?dept=emerg">查看急诊科（模拟） ›</a></div>';
+    }
+    if(!normal.length){
+      comboEl.result.innerHTML = html + '<div class="rc-empty">已选症状均为急危征兆，请优先按上方提示急诊处理。</div>';
+      return;
+    }
+    if(!ranked.length){
+      comboEl.result.innerHTML = '<div class="rc-empty">未能解析所选症状的科室映射，请检查选择。</div>';
+      return;
+    }
+    /* 分级横标 */
+    var maxLv = "green";
+    normal.forEach(function(en){ var r={red:3,yellow:2,green:1}; if(r[en.level]>r[maxLv]) maxLv=en.level; });
+    if(maxLv==="yellow") html += '<div class="rc warn-lv" style="margin-bottom:12px"><span class="pill lv-yellow">建议尽快就诊</span> <span style="font-size:12.5px;color:var(--amber-tx)">所选症状中有「建议尽快就诊」级别，请避免拖延。</span></div>';
+    html += '<div class="ov-head"><span class="tt">综合挂号建议（按推荐度排序）</span></div>';
+    ranked.slice(0,6).forEach(function(r, i){
+      var names = Object.keys(r.ens).map(function(id){ return r.ens[id]; });
+      var lv = r.lv;
+      html += '<div class="rc'+(i===0?" first":"")+(lv==="red"?" danger-lv":lv==="yellow"?" warn-lv":"")+'">'+
+              '<div class="rc-top">'+(i===0?'<span class="rc-badge">推荐首诊</span>':'<span class="rc-badge" style="background:#f0f5f3;color:var(--ink-2)">备选</span>')+
+              '<span class="rc-name">'+esc(r.name)+'</span>'+
+              '<span class="pill '+lvClass(lv)+'">'+esc(L[lv].label)+'</span>'+
+              '<span class="rc-score">综合分 <b>'+r.score+'</b></span></div>'+
+              '<div class="rc-matches">覆盖症状：'+names.map(function(nm){return '<span class="m-chip">'+esc(nm)+'</span>';}).join('')+'</div>'+
+              '<a class="rc-gh" href="guahao.html?dept='+encodeURIComponent(r.key)+'">查看该科 · 模拟挂号 ›</a>'+
+              '<div class="rc-note">'+esc(i===0?"多数症状指向该科，可先挂普通号初诊，医生会根据情况安排转诊。":"当首选科室不明确或已挂满时，可考虑该科作为备选。")+'</div></div>';
+    });
+    if(ranked.length>6) html += '<div class="rc-note" style="padding:0 4px">另有 '+esc(ranked.length-6)+' 个科室得分较低未列出，可到「科室浏览」页查看。</div>';
+    comboEl.result.innerHTML = html;
+    window.scrollTo({top:document.getElementById("viewCombo").offsetTop-8, behavior:"smooth"});
+  });
+
+  /* ================= 人体部位点选 ================= */
+  var BM = {
+    head:{label:"头面部 / 神经", ids:["headache","vertigo","insomnia","memory-loss","facial-paralysis","seizure"]},
+    eye:{label:"眼", ids:["eye","vision-blur","eye-floaters","lid-edema"]},
+    ear:{label:"耳", ids:["ear","hearing-loss","vertigo"]},
+    nose:{label:"鼻", ids:["nose","epistaxis","snoring"]},
+    oral:{label:"口 / 牙", ids:["tooth","mouth-ulcer","gum-bleeding"]},
+    neck:{label:"咽喉 / 颈部", ids:["sore-throat","dysphagia","goiter","thyroid-nodule","lymphadenopathy","snoring"]},
+    chest:{label:"胸 / 心肺", ids:["chestpain","palpitation","cough","dyspnea","hemoptysis","chronic-cough","mass","breast-pain"]},
+    abdomen:{label:"腹 / 盆腔", ids:["abdominal-pain","bloating","gerd","nausea","diarrhea","constipation","hematochezia","jaundice","gallstone","hernia","dysmenorrhea","menstrual","pregnancy"]},
+    back:{label:"腰背", ids:["backpain","neckpain","renal-colic","sciatica","osteoporosis"]},
+    arm:{label:"上肢", ids:["numbness","frozen-shoulder","joint-pain","morning-stiffness","tremor"]},
+    leg:{label:"下肢", ids:["sciatica","gout","heel-pain","calf-swelling","varicose","joint-pain"]},
+    skin:{label:"皮肤 / 毛发", ids:["rash","eczema","acne","alopecia","hives","herpes-zoster","pigment-change","nail-fungus","easy-bruise"]},
+    general:{label:"全身性", ids:["fever","fatigue","night-sweat","weight-loss","anemia","obesity"]}
+  };
+  var bmQuickOrder = [["head","头面"],["eye","眼"],["ear","耳"],["nose","鼻"],["oral","口/牙"],["neck","咽喉颈"],["chest","胸"],["abdomen","腹/盆腔"],["back","腰背"],["arm","上肢"],["leg","下肢"],["skin","皮肤"],["general","全身"]];
+  var bmFigEl = document.getElementById("bmSvg");
+  var bmCurEl = document.getElementById("bmCur");
+  var bmChipsEl = document.getElementById("bmChips");
+  var bmQuickEl = document.getElementById("bmQuick");
+  var bmPartNow = null;
+  function entryById(id){
+    for(var i=0;i<D.entries.length;i++) if(D.entries[i].id===id) return D.entries[i];
+    return null;
+  }
+  function renderBmSvg(){
+    if(!bmFigEl || bmFigEl.innerHTML) return;
+    var s = '<svg viewBox="0 0 220 400" role="img" aria-label="人体部位示意图">';
+    s += '<rect x="84"  y="234" width="24" height="112" rx="11" class="bm-part bm-skin" data-p="leg"/>';
+    s += '<rect x="112" y="234" width="24" height="112" rx="11" class="bm-part bm-skin" data-p="leg"/>';
+    s += '<ellipse cx="96"  cy="350" rx="17" ry="8"  class="bm-part bm-skin" data-p="leg"/>';
+    s += '<ellipse cx="124" cy="350" rx="17" ry="8"  class="bm-part bm-skin" data-p="leg"/>';
+    s += '<rect x="46"  y="102" width="16" height="118" rx="8" class="bm-part bm-skin" data-p="arm"/>';
+    s += '<rect x="158" y="102" width="16" height="118" rx="8" class="bm-part bm-skin" data-p="arm"/>';
+    s += '<rect x="64"  y="166" width="92" height="70"  rx="16" class="bm-part bm-skin" data-p="abdomen"/>';
+    s += '<rect x="64"  y="92"  width="92" height="78"  rx="18" class="bm-part bm-skin" data-p="chest"/>';
+    s += '<rect x="95"  y="82"  width="30" height="18"  rx="8"  class="bm-part bm-skin" data-p="neck"/>';
+    s += '<circle cx="110" cy="52" r="30" class="bm-part bm-skin" data-p="head"/>';
+    s += '<circle cx="76"  cy="52" r="8"  class="bm-part bm-feature" data-p="ear"/>';
+    s += '<circle cx="144" cy="52" r="8"  class="bm-part bm-feature" data-p="ear"/>';
+    s += '<circle cx="99"  cy="46" r="5.5" class="bm-part bm-feature" data-p="eye"/>';
+    s += '<circle cx="121" cy="46" r="5.5" class="bm-part bm-feature" data-p="eye"/>';
+    s += '<circle cx="110" cy="58" r="4.5" class="bm-part bm-feature" data-p="nose"/>';
+    s += '<ellipse cx="110" cy="70" rx="8"  ry="4.5" class="bm-part bm-feature" data-p="oral"/>';
+    s += '</svg>';
+    bmFigEl.innerHTML = s;
+  }
+  function setBmPart(p){
+    bmPartNow = p;
+    var cfg = BM[p];
+    if(!cfg) return;
+    /* 图例点亮 */
+    var els = bmFigEl.querySelectorAll ? bmFigEl.querySelectorAll(".bm-part") : [];
+    for(var i=0;i<els.length;i++){
+      els[i].classList.toggle("on", els[i].getAttribute("data-p")===p);
+    }
+    var qc = bmQuickEl.querySelectorAll ? bmQuickEl.querySelectorAll(".bm-q") : [];
+    for(var j=0;j<qc.length;j++) qc[j].classList.toggle("on", qc[j].getAttribute("data-p")===p);
+    var items = cfg.ids.map(function(id){ var en=entryById(id); return en?en.name:null; }).filter(Boolean);
+    bmCurEl.innerHTML = '「'+esc(cfg.label)+'」常见症状（'+items.length+'）<span class="sub"> · 点具体症状开始查询</span>';
+    bmChipsEl.innerHTML = items.map(function(nm){ return '<span class="chip" data-w="'+esc(nm)+'">'+esc(nm)+'</span>'; }).join("");
+  }
+  function renderBmQuick(){
+    bmQuickEl.innerHTML = bmQuickOrder.map(function(pair){
+      return '<span class="bm-q" data-p="'+pair[0]+'">'+pair[1]+'</span>';
+    }).join("");
+  }
+  bmFigEl.addEventListener("click", function(ev){
+    var el = ev.target.closest ? ev.target.closest(".bm-part") : null;
+    if(!el || !el.getAttribute("data-p")) return;
+    setBmPart(el.getAttribute("data-p"));
+  });
+  bmQuickEl.addEventListener("click", function(ev){
+    var el = ev.target.closest ? ev.target.closest(".bm-q") : null;
+    if(!el || !el.getAttribute("data-p")) return;
+    setBmPart(el.getAttribute("data-p"));
+  });
+  bmChipsEl.addEventListener("click", function(ev){
+    var el = ev.target.closest ? ev.target.closest(".chip") : null;
+    if(!el || !el.getAttribute("data-w")) return;
+    document.getElementById("q").value = el.getAttribute("data-w");
+    doSearch(el.getAttribute("data-w"));
+    window.scrollTo({top:0, behavior:"smooth"});
+  });
+  document.getElementById("bmHead").addEventListener("click", function(){
+    var card = document.getElementById("bmCard");
+    card.classList.toggle("open");
+    if(card.className.indexOf("open")>-1 && !bmQuickEl.innerHTML){
+      renderBmSvg(); renderBmQuick();
+      if(!bmPartNow) setBmPart("head");
+    }
+  });
 
   /* ---------- 首屏 ---------- */
   function init(){

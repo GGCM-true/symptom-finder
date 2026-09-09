@@ -2,7 +2,7 @@
 
 以 **四川省医学科学院·四川省人民医院（本部）** 为范例的「症状 → 挂号科室」导诊知识库与查询页面。
 
-- 收录 **57 条**高频症状导诊条目、**31 个**科室/门诊
+- 收录 **105 条**高频症状导诊条目、**31 个**科室/门诊
 - 电脑 / 手机自适应（响应式网页）
 - 数据与界面分离：`data.js` 即结构化数据库，改数据不用动页面
 
@@ -10,8 +10,10 @@
 
 | 文件 | 作用 |
 |---|---|
-| `index.html` | 查询页面（样式 + 逻辑内联，唯一界面文件） |
+| `index.html` | 主查询页面（症状查询 / 科室浏览 / 组合分诊 三个页签 + 人体部位点选，样式与逻辑内联） |
+| `guahao.html` | **模拟挂号页**：科室位置/挂号费/医生排班/就诊时段序号，由导诊结果卡「去挂号」直达 |
 | `data.js` | **数据层**：`TRIAGE_DATA` 全局对象（科室目录 + 症状条目 + 挂接映射） |
+| `backend/` | **Spring Boot + MyBatis API 版后端**：网页可从 MySQL 实时取数（详见 backend/README.md） |
 | `tools/export_mysql.js` | data.js → MySQL SQL 自动转换脚本（扩展数据后重跑刷新） |
 | `tools/export_oracle.js` | data.js → **Oracle 23ai** SQL 自动转换脚本（同一数据源双库导出） |
 | `sql/import_all.sql` | MySQL 一键导入脚本（建库 + 建表 + 数据，推荐） |
@@ -33,6 +35,9 @@
 2. **结果卡片**：分诊级别色标（🟢门诊 / 🟡尽快 / 🔴急诊）→ 可能的专业诊断 → 建议挂号科室 + 备选/转诊 → 疾病科普 → 就诊提示 → 急诊红线
 3. **科室浏览**：31 个科室按 内科 / 外科 / 妇产儿科 / 五官口腔皮肤 / 急诊与中心 分组，点某科下的症状可反向跳转查询
 4. **诊断反查**：结果卡片的「可能的专业诊断」为可点击词条，点开会弹层列出该诊断在库中关联的所有症状条目（按名称自动匹配跨条目），再点某条即可跳转并高亮对应卡片
+5. **人体部位点选**：首页可展开人体示意图，点头/眼/耳/胸/腹/腰背/四肢/皮肤等部位 → 显示该部位常见症状 → 点症状即查询（仿官方智能导诊交互）
+6. **多症状组合分诊**：可同时勾选多个症状，按「首诊 +3 / 备选 +1 / 共享诊断 +1」加权给科室排名，输出综合挂号建议；含急危征兆（红级）独立提醒
+7. **模拟挂号**：结果卡「去挂号」直达对应科室模拟挂号页，含楼层诊室、挂号费、支付方式、医生排班、就诊日期/时段/序号（数据虚构、仅演示）
 
 ## 三、数据模型（data.js 字段）
 
@@ -97,7 +102,7 @@ mysql --default-character-set=utf8mb4 -uroot -p < sql/import_all.sql
 | `triage_levels` | 分诊级别字典(3) | `level_key` = green/yellow/red、`label`、`hint` |
 | `triage_meta` | 元信息(医院/地址/免责声明等 8 项) | `meta_key`、`meta_value` |
 | `triage_entries` | 症状导诊条目(57) | `entry_id` PK、`name`、`category`、`population`、`dept_key`(FK)、`dept_display`、`dept_note`、`level_key`(FK)、`diagnoses`/`alts`/`tips`(JSON)、`science`、`redline` |
-| `triage_keywords` | 搜索词展开表(440) | `(entry_id, keyword)` 联合 PK，keyword 带索引便于 `LIKE` |
+| `triage_keywords` | 搜索词展开表(772) | `(entry_id, keyword)` 联合 PK，keyword 带索引便于 `LIKE` |
 
 ### 5.3 常用查询示例
 
@@ -146,7 +151,7 @@ node tools/export_oracle.js   # data.js 变更后重跑即可刷新 Oracle 脚�
 
 1. **建用户**：用 `system` 账号连接 `freepdb1`，执行 `sql/oracle/00_create_user.sql`（建 `shengyi_triage` 用户，默认密码 `oracle123`，可自行修改）
 2. **建表 + 导数据**：新建连接（localhost:1521 / 服务名 freepdb1 / shengyi_triage），打开 `sql/oracle/import_all_oracle.sql` 全选执行；或分步执行 `01_schema.sql` → `02_data.sql`
-3. **验证**：`SELECT COUNT(*) FROM triage_entries;` 应为 57；练习增删改用 `sql/oracle/dml_practice_oracle.sql`
+3. **验证**：`SELECT COUNT(*) FROM triage_entries;` 应为 105；练习增删改用 `sql/oracle/dml_practice_oracle.sql`
 
 与 MySQL 版的核心差异（脚本内注释均已标注）：`VARCHAR2(n CHAR)`/`CLOB` 代替 `VARCHAR`/`TEXT`；**原生 JSON 类型**（文本自动包装）；批量插入用 `INSERT ALL`（MySQL 的多行 `VALUES` 不支持）；改 JSON 用 `JSON_TRANSFORM`；注释用 `COMMENT ON`；外键列需手动建索引；**默认不自动提交，需显式 `COMMIT`**；报错码为 `ORA-xxxx`。
 
