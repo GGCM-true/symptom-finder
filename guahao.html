@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="IbDnE2U7DwP9GopfKm25wr">
+<head data-page-node-id="M4kufL191kGJ3B1Qdv3i71">
+<meta charset="UTF-8" data-page-node-id="LT4zfOVvZerzMm6JY2Sq3k">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" data-page-node-id="ZIDrpgN5X3TiLgHS7pJmmH">
+<title>省医 · 模拟挂号（科普演示版）</title>
+<meta name="description" content="基于导诊科室目录的模拟挂号演示页：科室位置、挂号费用、医生排班、就诊序号。数据为虚构演示，不产生真实挂号。" data-page-node-id="JxjrtKBKUHGYSkB7MFIQSw">
+<style>
+  :root{--teal:#0f6e56;--teal-d:#085041;--bg:#f4f7f6;--card:#fff;--line:#e3e8e6;--ink:#1f2937;--ink-2:#4b5563;--ink-3:#9ca3af;--red:#a32d2d;--amber:#b45309;--radius:12px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+  .wrap{max-width:920px;margin:0 auto;padding:0 14px}
+
+  header{background:var(--teal);color:#fff}
+  .head-inner{max-width:920px;margin:0 auto;padding:16px 14px 12px;display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .logo{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-weight:500;font-size:15px;flex:none}
+  h1{font-size:19px;font-weight:500}
+  .sub{font-size:12px;opacity:.85;margin-top:1px}
+  .back-link{color:#fff;text-decoration:none;font-size:13px;border:1px solid rgba(255,255,255,.45);border-radius:8px;padding:6px 12px;white-space:nowrap}
+  .back-link:hover{background:rgba(255,255,255,.12)}
+
+  .sim-bar{background:#faeeda;color:#854f0b;font-size:12.5px;padding:8px 14px;text-align:center;border-bottom:1px solid #f0d9b0}
+  .sim-bar b{font-weight:500}
+
+  main{padding:18px 0 30px}
+
+  .notice{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;font-size:12.5px;color:var(--ink-2);margin-bottom:16px}
+  .notice b{color:var(--amber);font-weight:500}
+
+  /* 科室选择列表 */
+  .group-t{font-size:14px;font-weight:500;color:var(--teal-d);margin:18px 4px 10px;display:flex;align-items:center;gap:6px}
+  .group-t::before{content:"";width:3px;height:14px;border-radius:2px;background:var(--teal)}
+  .dept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+  .dept-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;cursor:pointer;transition:border-color .15s,transform .15s}
+  .dept-card:hover{border-color:var(--teal);transform:translateY(-1px)}
+  .dept-card .dn{font-size:14px;font-weight:500}
+  .dept-card .dl{font-size:12px;color:var(--ink-3);margin-top:3px}
+
+  /* 科室详情 */
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:14px}
+  .panel h2{font-size:16px;font-weight:500;color:var(--teal-d);margin-bottom:8px}
+  .kv{display:grid;grid-template-columns:76px 1fr;gap:6px 10px;font-size:13.5px}
+  .kv dt{color:var(--ink-3)}
+  .kv dd{color:var(--ink)}
+  .pay-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+  .pay-chip{background:#e1f5ee;color:var(--teal-d);border-radius:6px;padding:2px 8px;font-size:12px}
+  .crumb{font-size:13px;margin-bottom:12px}
+  .crumb a{color:var(--teal);text-decoration:none}
+  .crumb a:hover{text-decoration:underline}
+
+  /* 医生卡片 */
+  .doc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:12px}
+  .doc-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .avatar{width:42px;height:42px;border-radius:50%;background:#e1f5ee;color:var(--teal-d);display:flex;align-items:center;justify-content:center;font-weight:500;font-size:15px;flex:none}
+  .doc-name{font-size:15px;font-weight:500}
+  .doc-tag{font-size:12px;border-radius:6px;padding:1px 8px;margin-left:6px}
+  .tag-t{background:#faeeda;color:#854f0b}
+  .tag-zr{background:#e6f1fb;color:#0c447c}
+  .tag-fzr{background:#eeedfe;color:#3c3489}
+  .tag-zs{background:#eaf3de;color:#27500a}
+  .doc-fee{margin-left:auto;font-size:13px;color:var(--ink-2)}
+  .doc-fee b{color:var(--red);font-weight:500;font-size:16px}
+  .doc-good{font-size:12.5px;color:var(--ink-3);margin-top:4px}
+
+  .slots{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:12px}
+  @media(max-width:640px){.slots{grid-template-columns:repeat(7,minmax(52px,1fr));overflow-x:auto}}
+  .slot{border:1px solid var(--line);border-radius:8px;padding:6px 4px;text-align:center;font-size:12px}
+  .slot .sd{color:var(--ink-3)}
+  .slot .st{margin:2px 0;color:var(--ink)}
+  .slot .sn{font-size:11px}
+  .slot.open{cursor:pointer}
+  .slot.open .sn{color:var(--teal)}
+  .slot.open:hover{border-color:var(--teal);background:#f2faf7}
+  .slot.full{opacity:.45}
+  .slot.full .sn{color:var(--red)}
+  .slot.off .st,.slot.off .sn{visibility:hidden}
+
+  /* 弹层 */
+  .overlay{position:fixed;inset:0;background:rgba(15,40,33,.45);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+  .overlay.show{display:flex}
+  .modal{background:var(--card);border-radius:16px;max-width:420px;width:100%;max-height:86vh;overflow-y:auto;padding:20px}
+  .modal h3{font-size:16px;font-weight:500;margin-bottom:12px;color:var(--teal-d)}
+  .ticket{border:1px dashed var(--teal);border-radius:10px;padding:12px;background:#f2faf7;font-size:13.5px}
+  .ticket .row{display:flex;gap:8px;padding:2px 0}
+  .ticket .row b{color:var(--ink-3);font-weight:400;flex:none;width:72px}
+  .radio-line{display:flex;align-items:center;gap:6px;font-size:13.5px;padding:5px 0;cursor:pointer}
+  .modal-actions{display:flex;gap:10px;margin-top:14px}
+  .btn{flex:1;border:none;border-radius:10px;padding:10px 0;font-size:14px;cursor:pointer}
+  .btn-main{background:var(--teal);color:#fff}
+  .btn-main:hover{background:var(--teal-d)}
+  .btn-ghost{background:#fff;color:var(--ink-2);border:1px solid var(--line)}
+  .ok-icon{width:52px;height:52px;border-radius:50%;background:#eaf3de;color:#3b6d11;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px}
+  .ok-t{text-align:center;font-size:15px;font-weight:500;margin-bottom:12px}
+  .pwd{text-align:center;font-size:13px;color:var(--ink-2);margin-top:10px}
+  .pwd b{font-size:20px;letter-spacing:6px;color:var(--red);font-weight:500}
+
+  footer{margin-top:26px;padding:16px 14px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);font-size:12px;color:var(--ink-3);margin-bottom:24px}
+  footer b{color:var(--ink-2);font-weight:500}
+  .empty-tip{text-align:center;color:var(--ink-3);font-size:13.5px;padding:30px 0}
+</style>
+</head>
+<body data-page-node-id="GG15FnECZRoK5fE3LdwO5j">
+
+<header data-page-node-id="xE1E10n1xUP3ktpDe6P0YF">
+  <div class="head-inner" data-page-node-id="vGDamjHzLE4jeRdlG5bMat">
+    <div class="brand" data-page-node-id="toXK3BDAF9DKt24SMyOIOI">
+      <div class="logo" data-page-node-id="ICRZZEEHTmgDjyJygJztH5">挂号</div>
+      <div data-page-node-id="z1RUUFqG6z2B67P7JHMM83">
+        <h1 data-page-node-id="2wrAo8Q4iwKZ3JLBVK8r0Y">省医 · 模拟挂号</h1>
+        <div class="sub" data-page-node-id="2sU17a4HzGXV0LjkqaHJsn">科室位置 · 医生排班 · 就诊序号（演示版）</div>
+      </div>
+    </div>
+    <a class="back-link" href="index.html" data-page-node-id="HbPnI9amDWobYgeBxe8VcN">← 返回症状导诊</a>
+  </div>
+</header>
+<div class="sim-bar" data-page-node-id="Re598wA9ulHSntMUHhfgxG">⚠️ 本页面为<b data-page-node-id="xDDNDotEJXZhUhiPvk8kzW">模拟挂号演示</b>：医生、号源、费用均为虚构数据，<b data-page-node-id="zuep8J16SkdOpGBejzj4JE">不产生真实挂号</b>，实际就诊请通过医院官方渠道</div>
+
+<main class="wrap" data-page-node-id="Olrf52eTfCTBNVfHC5tJdh">
+  <div id="content" data-page-node-id="PlP3MyBJaJz3IDRTNH91Lb"></div>
+
+  <footer data-page-node-id="axTvxXuoeb7EmBAmPhei3f">
+    <div data-page-node-id="vBpcvfAR5xAen1dqzNfBQx"><b data-page-node-id="zxlkYLGOXNqYjAQK8MCvD2">数据说明：</b>本页基于导诊工具的科室目录（整理自四川省人民医院官网公示）生成模拟排班，用于前端交互学习演示。</div>
+    <div style="margin-top:4px" data-page-node-id="sKt32hCDqvvih5khSQJ2Tv"><b data-page-node-id="QHubmBXKP9Kfq8tArWs2dR">免责声明：</b>医生姓名、号源、楼层诊室、挂号费均为虚构；真实挂号请使用医院官方公众号、自助机或窗口。</div>
+  </footer>
+</main>
+
+<!-- 挂号确认/成功 弹层 -->
+<div class="overlay" id="overlay" data-page-node-id="7afdQFqKPaDLdvhzTELMuh">
+  <div class="modal" id="modal" data-page-node-id="c44U3YPDCcbfyAxoxsqCSz"></div>
+</div>
+
+<script src="data.js"></script>
+<script>
+(function(){
+  "use strict";
+  var D = window.TRIAGE_DATA;
+  var esc = function(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});};
+  var content = document.getElementById("content");
+  var overlay = document.getElementById("overlay");
+  var modal   = document.getElementById("modal");
+
+  /* ================= 确定性模拟数据生成（同一科室每次刷新结果一致） ================= */
+  function seedOf(str){
+    var h = 2166136261;
+    for(var i=0;i<str.length;i++){ h ^= str.charCodeAt(i); h = Math.imul(h,16777619); }
+    return h>>>0;
+  }
+  function rng(seed){ var s = seed>>>0; return function(){ s=(Math.imul(s,1664525)+1013904223)>>>0; return s/4294967296; }; }
+  function pick(r,arr){ return arr[Math.floor(r()*arr.length)%arr.length]; }
+
+  var SURNAMES = ["王","李","张","刘","陈","杨","黄","周","吴","徐","孙","马","朱","胡","郭","何","高","林","罗","郑"];
+  var GIVEN    = ["志远","建国","明华","晓东","丽娟","文博","俊杰","淑华","永强","雅琴","思齐","雨桐","浩然","雪梅","志明","佳怡","国栋","春燕","立群","静怡","宏伟","丽华","建华","玉梅","向东","晓燕","泽民","桂芳","文清","书华"];
+
+  var TITLES = [
+    {k:"zr",  label:"主任医师", tag:"tag-zr", fee:30},
+    {k:"fzr", label:"副主任医师", tag:"tag-fzr", fee:20},
+    {k:"zs",  label:"主治医师", tag:"tag-zs", fee:15}
+  ];
+  var TE_GUI = {label:"特需专家", tag:"tag-t", fee:60};
+  var PAY_METHODS = ["医保个人账户","微信支付","支付宝","银联云闪付","门诊窗口（现金/刷卡）"];
+
+  /* 楼层/诊室：确定性 */
+  function roomOf(key){
+    var r = rng(seedOf("room-"+key));
+    var floor = 1 + Math.floor(r()*4);           /* 门诊 1-4 楼 */
+    var zone  = "ABCD"[Math.floor(r()*4)];        /* A-D 区 */
+    var no    = String(1+Math.floor(r()*24)).padStart(2,"0"); /* 01-24 诊室 */
+    return "门诊大楼 "+floor+" 楼 "+zone+" 区 "+no+" 诊室";
+  }
+
+  /* 医生 + 未来 7 天排班 */
+  function doctorsOf(dept){
+    var r = rng(seedOf("doc-"+dept.key));
+    var n = 4 + Math.floor(r()*3);                /* 4-6 名医生 */
+    var list = [];
+    var usedName = {};
+    for(var i=0;i<n;i++){
+      var title;
+      if(i===0)      title = TITLES[0];
+      else if(i===1) title = TITLES[1];
+      else           title = TITLES[Math.floor(r()*3)];
+      var name;
+      do{ name = pick(r,SURNAMES)+pick(r,GIVEN); }while(usedName[name]);
+      usedName[name] = 1;
+      var good = pick(r,[
+        "擅长常见病、多发病的诊治","临床经验丰富，对待患者耐心细致","擅长疑难病例的综合分析",
+        "专注于本专科疾病的规范化诊疗","擅长慢性病长期管理与随访"
+      ]);
+      var doc = {
+        id: dept.key+"-"+i,
+        name: name,
+        title: title,
+        special: i===0 && r()<0.6,               /* 首位主任有概率挂"特需" */
+        good: good
+      };
+      /* 排班：未来 7 天中随机 3-5 个半天 */
+      var slots = [];
+      var days = 7;
+      var count = 3 + Math.floor(r()*3);
+      var usedSlot = {};
+      for(var j=0;j<count;j++){
+        var d = Math.floor(r()*days);
+        var am = r()<0.55;
+        var sk = d+"-"+(am?"am":"pm");
+        if(usedSlot[sk]) continue;
+        usedSlot[sk] = 1;
+        var total = am?20:14;
+        var booked = Math.floor(r()*total*0.85);
+        slots.push({day:d, am:am, total:total, booked:booked});
+      }
+      slots.sort(function(a,b){ return a.day-b.day || (b.am?1:0)-(a.am?1:0); });
+      doc.slots = slots;
+      list.push(doc);
+    }
+    /* 特需医生费用替换 */
+    list.forEach(function(d0){ if(d0.special){ d0.feeInfo = TE_GUI; } });
+    return list;
+  }
+
+  /* ================= 日期工具 ================= */
+  function fmtDate(offset){
+    var d = new Date(); d.setDate(d.getDate()+offset);
+    var wk = "日一二三四五六".charAt(d.getDay());
+    var label = offset===0?"今天":offset===1?"明天":"周"+wk;
+    return {label:label, text:(d.getMonth()+1)+"/"+d.getDate()+" 周"+wk, full:d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+  }
+  function ampm(am){ return am? "上午 08:00-12:00" : "下午 14:00-17:30"; }
+  function estTime(am, seq){  /* 按每号约 6 分钟估算就诊时刻 */
+    var h = am? 8 : 14, m = am? 0 : 0;
+    var mins = (am?8*60:14*60) + (seq-1)*6;
+    h = Math.floor(mins/60); m = mins%60;
+    return String(h).padStart(2,"0")+":"+String(m).padStart(2,"0");
+  }
+
+  /* ================= 视图渲染 ================= */
+  var currentDept = null;
+
+  function renderDeptList(){
+    var groups = {};
+    D.departments.forEach(function(d){ (groups[d.group]=groups[d.group]||[]).push(d); });
+    var html = '<div class="notice">从下方选择科室查看模拟号源；更推荐的方式：在 <a href="index.html" style="color:var(--teal)">症状导诊页</a> 搜索症状后，点击结果卡里的「去挂号」直达对应科室。</div>';
+    Object.keys(groups).forEach(function(g){
+      html += '<div class="group-t">'+esc(g)+'</div><div class="dept-grid">';
+      groups[g].forEach(function(d){
+        html += '<div class="dept-card" data-dept="'+esc(d.key)+'"><div class="dn">'+esc(d.name)+'</div>'+
+                '<div class="dl">'+esc(roomOf(d.key))+'</div></div>';
+      });
+      html += '</div>';
+    });
+    content.innerHTML = html;
+    content.querySelectorAll(".dept-card").forEach(function(c){
+      c.addEventListener("click", function(){
+        location.hash = "#dept="+c.getAttribute("data-dept");
+      });
+    });
+  }
+
+  function renderDeptDetail(key){
+    var dept = null;
+    D.departments.forEach(function(d){ if(d.key===key) dept = d; });
+    if(!dept){ renderDeptList(); return; }
+    currentDept = dept;
+    var room = roomOf(key);
+    var docs = doctorsOf(dept);
+    var html = '<div class="crumb"><a href="index.html">症状导诊</a> › <a href="guahao.html" id="crumbList">全部科室</a> › '+esc(dept.name)+'</div>';
+
+    /* 科室信息卡 */
+    html += '<div class="panel"><h2>'+esc(dept.name)+' · 挂号信息</h2><dl class="kv">'+
+            '<dt>楼层位置</dt><dd>'+esc(room)+'（模拟）</dd>'+
+            '<dt>放号时间</dt><dd>每日 07:30 放出未来 7 天号源（模拟）</dd>'+
+            '<dt>窗口时间</dt><dd>工作日 07:30-11:30 / 13:30-17:00（模拟）</dd>'+
+            '<dt>支付方式</dt><dd><div class="pay-chips">'+PAY_METHODS.map(function(p){return '<span class="pay-chip">'+esc(p)+'</span>';}).join('')+'</div></dd>'+
+            (dept.intro?'<dt>科室简介</dt><dd style="color:var(--ink-2)">'+esc(dept.intro)+'</dd>':'')+
+            '</dl></div>';
+
+    /* 医生列表 */
+    docs.forEach(function(doc){
+      var feeInfo = doc.feeInfo || doc.title;
+      html += '<div class="doc"><div class="doc-head">'+
+              '<div class="avatar">'+esc(doc.name.charAt(0))+'</div>'+
+              '<div><span class="doc-name">'+esc(doc.name)+'</span>'+
+              '<span class="doc-tag '+feeInfo.tag+'">'+esc(feeInfo.label)+'</span></div>'+
+              '<div class="doc-fee">挂号费 <b>¥'+feeInfo.fee+'</b></div></div>'+
+              '<div class="doc-good">'+esc(doc.good)+'</div><div class="slots">';
+      for(var d=0; d<7; d++){
+        var info = fmtDate(d);
+        var sl = null;
+        doc.slots.forEach(function(s){ if(s.day===d) sl = s; });
+        if(!sl){ html += '<div class="slot off"><div class="sd">'+info.label+'</div><div class="st">'+info.text+'</div><div class="sn">—</div></div>'; continue; }
+        var left = sl.total - sl.booked;
+        var seq  = sl.booked + 1;
+        if(left<=0){
+          html += '<div class="slot full"><div class="sd">'+info.label+'</div><div class="st">'+info.text+'</div><div class="sn">约满</div></div>';
+        }else{
+          html += '<div class="slot open" data-doc="'+esc(doc.id)+'" data-day="'+d+'" data-am="'+(sl.am?1:0)+'">'+
+                  '<div class="sd">'+info.label+'</div><div class="st">'+info.text+'</div>'+
+                  '<div class="sn">余'+left+' · '+esc(sl.am?"上午":"下午")+'</div></div>';
+        }
+      }
+      html += '</div></div>';
+    });
+
+    content.innerHTML = html;
+    content.querySelectorAll(".slot.open").forEach(function(s){
+      s.addEventListener("click", function(){
+        openConfirm(s.getAttribute("data-doc"), +s.getAttribute("data-day"), s.getAttribute("data-am")==="1");
+      });
+    });
+    var cl = document.getElementById("crumbList");
+    if(cl) cl.addEventListener("click", function(e){ e.preventDefault(); location.hash=""; });
+  }
+
+  /* ================= 挂号确认与凭据 ================= */
+  function findDoc(dept, docId){
+    var docs = doctorsOf(dept);
+    for(var i=0;i<docs.length;i++) if(docs[i].id===docId) return docs[i];
+    return null;
+  }
+  function openConfirm(docId, day, am){
+    var dept = currentDept, doc = findDoc(dept, docId);
+    if(!doc) return;
+    var info = fmtDate(day);
+    var feeInfo = doc.feeInfo || doc.title;
+    var seq = null;
+    doc.slots.forEach(function(s){ if(s.day===day && s.am===am) seq = s.booked+1; });
+    var est = estTime(am, seq);
+    var payHtml = PAY_METHODS.map(function(p,i){
+      return '<label class="radio-line"><input type="radio" name="pay" value="'+esc(p)+'"'+(i===1?" checked":"")+'> '+esc(p)+'</label>';
+    }).join("");
+    modal.innerHTML =
+      '<h3>确认挂号（模拟）</h3>'+
+      '<div class="ticket">'+
+        '<div class="row"><b>科室</b><span>'+esc(dept.name)+'</span></div>'+
+        '<div class="row"><b>医生</b><span>'+esc(doc.name)+' · '+esc(feeInfo.label)+'</span></div>'+
+        '<div class="row"><b>就诊时间</b><span>'+info.full+'（'+info.label+'）'+esc(ampm(am))+'</span></div>'+
+        '<div class="row"><b>就诊序号</b><span>第 '+seq+' 号 · 预计 '+est+' 就诊</span></div>'+
+        '<div class="row"><b>地点</b><span>'+esc(roomOf(dept.key))+'</span></div>'+
+        '<div class="row"><b>挂号费</b><span style="color:var(--red)">¥'+feeInfo.fee+'</span></div>'+
+      '</div>'+
+      '<div style="margin-top:12px;font-size:13.5px">支付方式：</div>'+payHtml+
+      '<div class="modal-actions"><button class="btn btn-ghost" id="mCancel">取消</button>'+
+      '<button class="btn btn-main" id="mOk">确认并支付（模拟）</button></div>';
+    overlay.classList.add("show");
+    document.getElementById("mCancel").addEventListener("click", function(){ overlay.classList.remove("show"); });
+    document.getElementById("mOk").addEventListener("click", function(){
+      var pay = (document.querySelector('input[name="pay"]:checked')||{}).value || PAY_METHODS[1];
+      showTicket(dept, doc, feeInfo, info, am, seq, est, pay);
+    });
+  }
+  function showTicket(dept, doc, feeInfo, info, am, seq, est, pay){
+    var pwd = String(Math.floor(100000+Math.random()*900000));
+    modal.innerHTML =
+      '<div class="ok-icon">✓</div><div class="ok-t">挂号成功（模拟凭据）</div>'+
+      '<div class="ticket">'+
+        '<div class="row"><b>科室</b><span>'+esc(dept.name)+'</span></div>'+
+        '<div class="row"><b>医生</b><span>'+esc(doc.name)+' · '+esc(feeInfo.label)+'</span></div>'+
+        '<div class="row"><b>就诊时间</b><span>'+info.full+' '+esc(ampm(am))+'</span></div>'+
+        '<div class="row"><b>就诊序号</b><span>第 <b style="color:var(--red)">'+seq+'</b> 号 · 预计 '+est+'</span></div>'+
+        '<div class="row"><b>地点</b><span>'+esc(roomOf(dept.key))+'</span></div>'+
+        '<div class="row"><b>支付金额</b><span>¥'+feeInfo.fee+'（'+esc(pay)+'）</span></div>'+
+      '</div>'+
+      '<div class="pwd">取号密码：<b>'+pwd+'</b><br>就诊当天凭密码到一楼自助机取号（模拟流程）</div>'+
+      '<div class="modal-actions"><button class="btn btn-main" id="mDone">完成</button></div>';
+    document.getElementById("mDone").addEventListener("click", function(){ overlay.classList.remove("show"); });
+  }
+  overlay.addEventListener("click", function(e){ if(e.target===overlay) overlay.classList.remove("show"); });
+
+  /* ================= 入口 ================= */
+  function route(){
+    /* 兼容两种入口：hash 路由（#dept=xxx）与查询参数（guahao.html?dept=xxx，来自导诊页「去挂号」按钮） */
+    var m = location.hash.match(/dept=([a-z_]+)/i);
+    if(!m){ m = location.search.match(/dept=([a-z_]+)/i); }
+    if(m){ renderDeptDetail(m[1]); } else { renderDeptList(); }
+    window.scrollTo(0,0);
+  }
+  window.addEventListener("hashchange", route);
+  route();
+})();
+</script>
+</body>
+</html>

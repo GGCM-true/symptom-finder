@@ -871,3 +871,6 @@ const TRIAGE_DATA = {
     "疼痛科门诊": "pain", "疼痛科": "pain"
   }
 };
+
+/* 显式挂载到 window，兼容不同页面的访问方式（const 全局词法绑定不会自动出现在 window 上） */
+if (typeof window !== "undefined") { window.TRIAGE_DATA = TRIAGE_DATA; }

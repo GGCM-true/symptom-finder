@@ -72,6 +72,10 @@
   .seg-t::before{content:"";width:3px;height:13px;border-radius:2px;background:var(--teal);flex:none}
   .seg-hint{font-size:11px;background:var(--teal-soft);color:var(--teal-deep);border-radius:999px;padding:0 8px;font-weight:400;line-height:1.8}
   .dx-list{display:flex;flex-wrap:wrap;gap:7px}
+  .gh-btn{display:inline-block;background:var(--teal);color:#fff;text-decoration:none;border-radius:8px;padding:6px 14px;font-size:13px;margin-left:10px;transition:background .15s}
+  .gh-btn:hover{background:var(--teal-d)}
+  .gh-alt{background:#f0f5f3;color:var(--teal-d);padding:5px 12px}
+  .gh-alt:hover{background:#e1ece8}
   .dx{display:inline-block;background:#eef3f1;color:var(--teal-deep);border:1px solid #d8e6e0;border-radius:8px;padding:3px 10px;font-size:13px;cursor:pointer;transition:all .12s}
   .dx:hover{background:var(--teal-soft);border-color:var(--teal)}
   .dx:active{transform:translateY(1px)}
@@ -256,11 +260,17 @@
     html += '<div class="seg"><div class="seg-t">可能的专业诊断方向<span class="seg-hint">点按可反查关联症状</span></div><div class="dx-list">'+
             (en.diagnoses||[]).map(function(d){return '<button type="button" class="dx" data-dx="'+esc(d)+'">'+esc(d)+'</button>';}).join('')+'</div></div>';
 
+    var ghKey = keyOf(en.dept);
     html += '<div class="seg"><div class="seg-t">建议挂号科室</div><div class="dept-main">'+
-            '<div class="dm-label">首诊</div><div><div class="dm-name">'+esc(en.dept)+'</div>'+
+            '<div class="dm-label">首诊</div><div><div class="dm-name">'+esc(en.dept)+
+            (ghKey?'<a class="gh-btn" href="guahao.html?dept='+encodeURIComponent(ghKey)+'">去挂号 ›</a>':'')+
+            '</div>'+
             (en.deptNote?'<div class="dm-note">'+esc(en.deptNote)+'</div>':'')+'</div></div>';
     if(en.alts && en.alts.length){
-      html += '<div class="alts-line"><b>备选 / 转诊：</b>'+en.alts.map(esc).join(' · ')+'</div>';
+      html += '<div class="alts-line"><b>备选 / 转诊：</b>'+en.alts.map(function(a){
+        var ak = keyOf(a);
+        return esc(a)+(ak?' <a class="gh-btn gh-alt" href="guahao.html?dept='+encodeURIComponent(ak)+'">挂号 ›</a>':'');
+      }).join(' · ')+'</div>';
     }
     html += '</div>';
 
