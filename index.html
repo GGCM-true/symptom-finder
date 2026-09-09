@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="HVorZp7RT6KKq7URzuBgxw">
+<head data-page-node-id="5ZWwtNdAsQrQgiSWntvceC">
+<meta charset="UTF-8" data-page-node-id="Dg8GA8odBSIFn15xF4w0Wh">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" data-page-node-id="qjzCVJpDn9RmYDZERFpGu4">
+<title>省医 · 症状导诊查询</title>
+<meta name="description" content="以四川省人民医院为例的症状—科室导诊科普查询工具" data-page-node-id="EGUia8l2JPp5ieJAjHuXus">
+<style>
+  :root{
+    --teal:#0F6E56; --teal-deep:#085041; --teal-soft:#E1F5EE;
+    --ink:#1f2a26; --ink-2:#5a6b64; --ink-3:#93a39c;
+    --line:#e4e9e7; --bg:#f4f7f6; --card:#ffffff;
+    --green-bg:#EAF3DE; --green-tx:#3B6D11; --green-line:#97C459;
+    --amber-bg:#FAEEDA; --amber-tx:#854F0B; --amber-line:#EF9F27;
+    --red-bg:#FCEBEB; --red-tx:#A32D2D; --red-line:#E24B4A;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.6;font-size:15px}
+  .wrap{max-width:920px;margin:0 auto;padding:0 14px 40px}
+  header{background:var(--teal);color:#fff}
+  .head-inner{max-width:920px;margin:0 auto;padding:18px 14px 14px;display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .logo{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-weight:500;font-size:16px;flex:none}
+  h1{font-size:19px;font-weight:500;letter-spacing:.5px}
+  .sub{font-size:12px;opacity:.85;margin-top:1px}
+  .campus{font-size:11px;text-align:right;opacity:.85;line-height:1.5}
+  nav{max-width:920px;margin:0 auto;padding:0 14px;display:flex;gap:6px}
+  .tab{padding:10px 16px 12px;font-size:14px;cursor:pointer;border-bottom:2.5px solid transparent;opacity:.85;user-select:none}
+  .tab.on{opacity:1;border-bottom-color:#fff;font-weight:500}
+  main{padding-top:16px}
+  .searchbox{position:relative}
+  .srow{display:flex;gap:8px}
+  #q{flex:1;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;font-size:16px;background:#fff;outline:none;transition:border .15s}
+  #q:focus{border-color:var(--teal)}
+  .sbtn{border:none;border-radius:12px;background:var(--teal);color:#fff;padding:0 18px;font-size:15px;cursor:pointer;flex:none}
+  .sbtn:active{background:var(--teal-deep)}
+  .suggest{position:absolute;top:calc(100% + 4px);left:0;right:66px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(15,60,45,.10);z-index:30;max-height:300px;overflow:auto;display:none}
+  .suggest.show{display:block}
+  .sg-item{padding:9px 14px;cursor:pointer;border-bottom:1px solid #f1f4f3;font-size:14px}
+  .sg-item:last-child{border-bottom:none}
+  .sg-item:hover{background:var(--teal-soft)}
+  .sg-kw{color:var(--teal);font-size:12px;background:var(--teal-soft);border-radius:6px;padding:0 6px;margin-right:8px;white-space:nowrap}
+  .sg-sub{float:right;color:var(--ink-3);font-size:12px}
+  .chips{margin-top:12px;display:flex;flex-wrap:wrap;gap:8px}
+  .chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 13px;font-size:13px;cursor:pointer;color:var(--ink-2);transition:all .12s}
+  .chip:hover{border-color:var(--teal);color:var(--teal);background:var(--teal-soft)}
+  .statline{font-size:12px;color:var(--ink-3);margin-top:10px}
+  .result-head{display:flex;align-items:baseline;gap:8px;margin:18px 0 10px}
+  .result-head .tt{font-size:16px;font-weight:500}
+  .result-head .cnt{font-size:12px;color:var(--ink-3)}
+  .no-result{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;font-size:14px;color:var(--ink-2)}
+  .no-result b{color:var(--ink)}
+  .hint-btns{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px}
+  .hint-btns .chip{background:var(--teal-soft);border-color:transparent;color:var(--teal-deep)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:14px}
+  .c-top{display:flex;align-items:flex-start;gap:10px;justify-content:space-between;flex-wrap:wrap}
+  .c-name{font-size:18px;font-weight:500}
+  .c-meta{font-size:12px;color:var(--ink-3);margin-top:2px}
+  .c-tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .pill{font-size:12px;border-radius:999px;padding:3px 10px;font-weight:500;white-space:nowrap}
+  .lv-green{background:var(--green-bg);color:var(--green-tx)}
+  .lv-yellow{background:var(--amber-bg);color:var(--amber-tx)}
+  .lv-red{background:var(--red-bg);color:var(--red-tx)}
+  .lvline{font-size:12px;color:var(--ink-3)}
+  .seg{margin-top:14px}
+  .seg-t{font-size:13px;color:var(--ink-3);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+  .seg-t::before{content:"";width:3px;height:13px;border-radius:2px;background:var(--teal);flex:none}
+  .seg-hint{font-size:11px;background:var(--teal-soft);color:var(--teal-deep);border-radius:999px;padding:0 8px;font-weight:400;line-height:1.8}
+  .dx-list{display:flex;flex-wrap:wrap;gap:7px}
+  .dx{display:inline-block;background:#eef3f1;color:var(--teal-deep);border:1px solid #d8e6e0;border-radius:8px;padding:3px 10px;font-size:13px;cursor:pointer;transition:all .12s}
+  .dx:hover{background:var(--teal-soft);border-color:var(--teal)}
+  .dx:active{transform:translateY(1px)}
+  .dept-main{background:var(--teal-soft);border-radius:10px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start}
+  .dept-main .dm-label{font-size:11px;color:var(--teal-deep);font-weight:500;flex:none;line-height:1.9}
+  .dept-main .dm-name{font-size:15px;font-weight:500;color:var(--teal-deep)}
+  .dept-main .dm-note{font-size:12px;color:var(--teal-deep);opacity:.9;margin-top:2px}
+  .alts-line{font-size:12px;color:var(--ink-2);margin-top:8px}
+  .alts-line b{color:var(--ink-2);font-weight:500}
+  .science p{font-size:14px;color:var(--ink)}
+  .tips{list-style:none;counter-reset:tips}
+  .tips li{font-size:13.5px;color:var(--ink-2);position:relative;padding-left:22px;margin-bottom:5px}
+  .tips li::before{counter-increment:tips;content:counter(tips);position:absolute;left:0;top:3px;width:15px;height:15px;border-radius:50%;background:#eef3f1;color:var(--teal-deep);font-size:10px;text-align:center;line-height:15px}
+  .redline{border-left:3px solid var(--red-line);background:var(--red-bg);border-radius:0 10px 10px 0;padding:10px 12px;font-size:13px;color:var(--red-tx);margin-top:4px}
+  .redline .rl-t{font-weight:500;margin-bottom:2px;font-size:12.5px;letter-spacing:.5px}
+  .pop-tag{font-size:11px;color:var(--teal-deep);background:var(--teal-soft);border-radius:6px;padding:1px 7px;margin-left:8px}
+  .cat-tag{font-size:11px;color:var(--ink-3);background:#f0f5f3;border-radius:6px;padding:1px 7px;margin-left:6px}
+
+  /* 科室浏览 */
+  .grp{margin-bottom:20px}
+  .grp-t{font-size:13px;color:var(--ink-3);margin:0 0 8px;font-weight:500;letter-spacing:1px}
+  .grp-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+  .dpt{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
+  .dpt .dn{font-size:15px;font-weight:500;color:var(--teal-deep)}
+  .dpt .di{font-size:12.5px;color:var(--ink-2);margin-top:6px}
+  .dpt .links{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px}
+  .mini-chip{border:none;background:var(--teal-soft);color:var(--teal-deep);border-radius:999px;padding:2px 9px;font-size:11.5px;cursor:pointer}
+  .mini-chip:hover{filter:brightness(.96)}
+  .mini-empty{font-size:11.5px;color:var(--ink-3)}
+
+  footer{margin-top:28px;padding:16px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);font-size:12px;color:var(--ink-3)}
+  footer .f-row{margin-bottom:4px}
+  footer b{color:var(--ink-2);font-weight:500}
+  .kbd-tip{display:inline-block;border:1px solid var(--line);border-radius:4px;padding:0 5px;font-size:11px;background:#f7f9f8;color:var(--ink-3)}
+
+  /* 诊断反查弹层 */
+  .overlay{position:fixed;inset:0;background:rgba(15,40,30,.42);display:none;align-items:flex-end;justify-content:center;z-index:60}
+  .overlay.show{display:flex}
+  @media (min-width:560px){.overlay{align-items:center}
+  .sheet{max-height:74vh;border-radius:18px}}
+  .sheet{background:#fff;width:100%;max-width:660px;max-height:84vh;overflow:auto;border-radius:18px 18px 0 0;padding:18px 18px 24px;position:relative}
+  .sheet .x{position:absolute;top:12px;right:12px;border:none;background:#f0f5f3;color:var(--ink-2);width:30px;height:30px;border-radius:50%;font-size:17px;cursor:pointer;line-height:1}
+  .sheet .x:hover{background:#e3ece8;color:var(--ink)}
+  .sheet .dx-t{font-size:18px;font-weight:500;color:var(--teal-deep);padding-right:42px;line-height:1.4}
+  .sheet .dx-sub{font-size:12.5px;color:var(--ink-3);margin-top:2px;line-height:1.6}
+  .sheet .dx-sec{margin-top:14px}
+  .sheet .dx-sec-t{font-size:13px;color:var(--ink-3);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+  .sheet .dx-sec-t::before{content:"";width:3px;height:12px;border-radius:2px;background:var(--teal);flex:none}
+  .dx-links{display:flex;flex-wrap:wrap;gap:8px}
+  .dx-link{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 13px;font-size:13px;color:var(--ink);cursor:pointer;transition:all .12s;display:inline-flex;align-items:center;gap:6px}
+  .dx-link:hover{border-color:var(--teal);background:var(--teal-soft);color:var(--teal-deep)}
+  .dx-dot{width:8px;height:8px;border-radius:50%;flex:none}
+  .d-dot{background:var(--red-line)}
+  .y-dot{background:#e8a53b}
+  .g-dot{background:#7fae35}
+  .dept-notes{font-size:12.5px;color:var(--ink-2);line-height:1.8;background:#f7faf9;border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+  .dept-notes b{color:var(--teal-deep);font-weight:500}
+  .dx-empty{font-size:13px;color:var(--ink-2);background:#f7faf9;border:1px dashed var(--line);border-radius:10px;padding:12px 14px}
+  .flash{animation:flashBg 1.3s ease 2}
+  @keyframes flashBg{0%{box-shadow:0 0 0 3px var(--teal);background:#fbfefc}55%{box-shadow:0 0 0 0 rgba(15,110,86,0)}100%{box-shadow:none}}
+  @media (max-width:640px){
+    .suggest{right:0}
+    h1{font-size:17px}
+    .campus{display:none}
+    .grp-cards{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body data-page-node-id="YZQvVSTy3EUDNgyfd4Pp7B">
+<header data-page-node-id="ds8GqSyh4PyVH3QueGieM1">
+  <div class="head-inner" data-page-node-id="SqiojoOZSkcX9nUjfNdJqo">
+    <div class="brand" data-page-node-id="4WUVos3zzfRphAguzENN5F">
+      <div class="logo" data-page-node-id="bW6mQC6NFG9vtmOhGpXVNx">导诊</div>
+      <div data-page-node-id="La44bdx4Hl9uBi9W5ezZag">
+        <h1 data-page-node-id="IpLRTL5fZMhxKB0nn8K5ls">省医 · 症状导诊</h1>
+        <div class="sub" data-page-node-id="sey8Nrn58nDjO7yjWnpmFe">症状 → 科室 · 科普参考版</div>
+      </div>
+    </div>
+    <div class="campus" data-page-node-id="H6OUFYCz467wleyp7uE5cY">四川省医学科学院·四川省人民医院<br data-page-node-id="VEdNsO6QfA6cKof4koSfD8">本部：成都市青羊区一环路西二段32号</div>
+  </div>
+  <nav data-page-node-id="VYv5fprG0IT78zI4fMZzXP">
+    <div class="tab on" data-view="search" id="tabSearch" data-page-node-id="6rxr0El5MtuiBF4x97dkM7">症状查询</div>
+    <div class="tab" data-view="depts" id="tabDepts" data-page-node-id="FvthAqZgdnXoRBzBtTG7Yu">科室浏览</div>
+  </nav>
+</header>
+
+<main class="wrap" data-page-node-id="AL9uOjz56FpVmApoUVkh1z">
+  <section id="viewSearch" data-page-node-id="JT44YD4wCKBkvRvgv3FYGI">
+    <div class="searchbox" data-page-node-id="pp5dCBg8ew2pAOKMbUoMyh">
+      <div class="srow" data-page-node-id="BGZ6caQoquJUJ9kNCyCsY0">
+        <input id="q" type="search" placeholder="输入症状，如：肚子不舒服、发烧、拉肚子…" autocomplete="off" enterkeyhint="search" data-page-node-id="lJb0GbAGY9QiFKHI3NzCXx">
+        <button class="sbtn" id="btnSearch" data-page-node-id="hZ9UIzmHaU2AZZ4rKT0BiY">查询</button>
+      </div>
+      <div class="suggest" id="suggest" data-page-node-id="6MFyMaAjTC9cKWapp8CaCI"></div>
+    </div>
+    <div class="chips" id="chips" data-page-node-id="kdFVHJVSgXvBhjmU2qPlHl"></div>
+    <div class="statline" id="statline" data-page-node-id="6OGBm7WvWMMdAFmygEDFTY"></div>
+    <div id="results" data-page-node-id="Psm4JmFDAflNkSHlPNmovw"></div>
+  </section>
+
+  <section id="viewDepts" style="display:none" data-page-node-id="Ht0GbRZUOPCEhV0iz8Ypy0">
+    <div class="statline" style="margin-bottom:14px" id="deptStat" data-page-node-id="LUMfo24KHIABIR70cX4ACz"></div>
+    <div id="deptList" data-page-node-id="jYDmkF1Do9xLBVUI8Wb8zd"></div>
+  </section>
+</main>
+
+<div class="overlay" id="dxOverlay" role="dialog" aria-modal="true" aria-label="诊断反查">
+  <div class="sheet">
+    <button class="x" id="dxClose" aria-label="关闭" title="关闭">×</button>
+    <div id="dxBody"></div>
+  </div>
+</div>
+
+<footer class="wrap" data-page-node-id="eOcPLihAFOkrAct2anea2K">
+  <div class="f-row" data-page-node-id="NVqsDODDaOxjm2Osgwb3Qx"><b data-page-node-id="ZZdaYHLW1IepnNAHr9gtcm">数据说明：</b><span id="footMeta" data-page-node-id="UpLPL0ZiGgjSmqFH4mkjnr"></span></div>
+  <div class="f-row" data-page-node-id="pfhuSX6aEYmDV1OfTgpjRq"><b data-page-node-id="nhgoDZLDGZVS3Dgv6kZOYx">免责声明：</b>本工具为科普参考，症状与科室对应依据公开分诊惯例整理，不能替代医生面诊；急危重症请立即拨打 120 或前往急诊医学科（急救中心），最终请以医院当日公示为准。</div>
+</footer>
+
+<script src="data.js"></script>
+<script>
+(function(){
+  "use strict";
+  var D = TRIAGE_DATA;
+  var L = D.levels;
+
+  /* ---------- 基础工具 ---------- */
+  function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+  function norm(s){return String(s||"").trim().toLowerCase().replace(/\s+/g,"");}
+  function stripParen(s){return String(s).replace(/[（(].*?[)）]/g,"").trim();}
+
+  /* ---------- 统计 ---------- */
+  var depMap = D.deptKeys || {};
+  function keyOf(deptName){
+    if(!deptName) return null;
+    var n = stripParen(deptName).replace(/\s+/g,"");
+    if(depMap[n]) return depMap[n];
+    // 名字含“/”或多院区名时做双向包含匹配（如「心身医学中心 / 四川省精神医学中心」）
+    var mk;
+    for(mk in depMap){
+      if(n.length>1 && depMap[mk] && mk.length>1 && (n.indexOf(mk)>-1 || mk.indexOf(n)>-1)) return depMap[mk];
+    }
+    // 兜底：逐科室做包含匹配
+    for(var i=0;i<D.departments.length;i++){
+      var dn = D.departments[i].name;
+      if(dn && (n.indexOf(dn)>-1 || dn.indexOf(n)>-1 && dn.indexOf("/")===-1)) return D.departments[i].key;
+    }
+    return null;
+  }
+  function linkDepts(entry){
+    var keys = {};
+    var k = keyOf(entry.dept); if(k) keys[k]=1;
+    (entry.alts||[]).forEach(function(a){ var k2=keyOf(a); if(k2) keys[k2]=1; });
+    return keys;
+  }
+
+  // 每个科室：关联症状
+  var deptEntries = {};
+  D.departments.forEach(function(dp){ deptEntries[dp.key]=[]; });
+  D.entries.forEach(function(en){
+    var ks = linkDepts(en);
+    Object.keys(ks).forEach(function(kk){ if(deptEntries[kk]) deptEntries[kk].push(en); });
+  });
+
+  var hotWords = ["发烧","肚子疼","咳嗽","胸痛","拉肚子","头痛","失眠","牙痛","皮疹","腰痛","月经不调","反酸烧心"];
+
+  /* ---------- 渲染辅助 ---------- */
+  function lvClass(l){ return "lv-"+l; }
+  function pillHtml(entry){
+    var lv = L[entry.level];
+    var pop = (entry.population && entry.population!=="通用") ? '<span class="pop-tag">'+esc(entry.population)+'</span>' : '';
+    var cat = '<span class="cat-tag">'+esc(entry.cat)+'</span>';
+    return '<div class="c-tags"><span class="pill '+lvClass(entry.level)+'">'+esc(lv.label)+'</span><span class="lvline">'+esc(lv.hint)+'</span>'+pop+cat+'</div>';
+  }
+
+  function entryCard(en, matchedKw){
+    var html = '';
+    html += '<div class="card" id="e-'+esc(en.id)+'">';
+    html += '<div class="c-top"><div><div class="c-name">'+esc(en.name)+'</div>'+
+            '<div class="c-meta">'+(matchedKw?'命中关键词「'+esc(matchedKw)+'」→ 标准症状名「'+esc(en.name)+'」':'标准症状名：'+esc(en.name))+'</div></div>'+
+            pillHtml(en)+'</div>';
+
+    html += '<div class="seg"><div class="seg-t">可能的专业诊断方向<span class="seg-hint">点按可反查关联症状</span></div><div class="dx-list">'+
+            (en.diagnoses||[]).map(function(d){return '<button type="button" class="dx" data-dx="'+esc(d)+'">'+esc(d)+'</button>';}).join('')+'</div></div>';
+
+    html += '<div class="seg"><div class="seg-t">建议挂号科室</div><div class="dept-main">'+
+            '<div class="dm-label">首诊</div><div><div class="dm-name">'+esc(en.dept)+'</div>'+
+            (en.deptNote?'<div class="dm-note">'+esc(en.deptNote)+'</div>':'')+'</div></div>';
+    if(en.alts && en.alts.length){
+      html += '<div class="alts-line"><b>备选 / 转诊：</b>'+en.alts.map(esc).join(' · ')+'</div>';
+    }
+    html += '</div>';
+
+    html += '<div class="seg"><div class="seg-t">疾病科普</div><div class="science"><p>'+esc(en.science)+'</p></div></div>';
+
+    if(en.tips && en.tips.length){
+      html += '<div class="seg"><div class="seg-t">就诊提示</div><ul class="tips">'+en.tips.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul></div>';
+    }
+    if(en.redline){
+      html += '<div class="seg redline"><div class="rl-t">急诊红线 · 出现以下情况请立即就医</div>'+esc(en.redline)+'</div>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  /* ---------- 搜索 ---------- */
+  function searchEntries(q){
+    var n = norm(q);
+    if(!n) return {list:[], kw:null};
+    var out = [];
+    D.entries.forEach(function(en){
+      var pool = [en.name].concat(en.keywords||[]).concat(en.diagnoses||[]);
+      for(var i=0;i<pool.length;i++){
+        var pn = norm(pool[i]);
+        if(pn && (pn.indexOf(n)>-1 || n.indexOf(pn)>-1)){
+          out.push({en:en, kw:pool[i], score: score(en,i,pn,n)});
+          return;
+        }
+      }
+    });
+    out.sort(function(a,b){return b.score-a.score;});
+    return {list:out, kw:q.trim()};
+  }
+  function score(en, idx, pn, n){
+    var s = 0;
+    if(pn===n) s += 100;           // 完全等于
+    if(norm(en.name)===n) s += 50; // 命中主名
+    if(idx===1) s += 20;           // 命中同义词
+    if(pn.indexOf(n)===0) s += 10; // 前缀命中
+    return s + (n.length/pn.length)*5;
+  }
+
+  var resultsEl = document.getElementById("results");
+  function renderResults(items, rawQ){
+    if(!items.length){
+      resultsEl.innerHTML = '<div class="no-result"><b>没有搜到「'+esc(rawQ)+'」的条目。</b><br>'
+        +'试试换一种说法（如「肚子疼」→「腹痛」）、选择右侧热门标签，或直接到「科室浏览」页按科室查看。'
+        +'<div class="hint-btns">'
+        + hotWords.slice(0,8).map(function(w){return '<span class="chip" data-w="'+esc(w)+'">'+esc(w)+'</span>';}).join('')
+        +'</div></div>';
+      return;
+    }
+    var head = '<div class="result-head"><span class="tt">查询「'+esc(rawQ)+'」</span><span class="cnt">共 '+items.length+' 条</span></div>';
+    resultsEl.innerHTML = head + items.map(function(it){return entryCard(it.en, it.kw);}).join('');
+  }
+
+  /* ---------- 建议下拉 ---------- */
+  var sugEl = document.getElementById("suggest");
+  function showSuggest(q){
+    var res = searchEntries(q);
+    if(!res.list.length){ sugEl.className="suggest"; return; }
+    var html = res.list.slice(0,8).map(function(it){
+      var lv = L[it.en.level];
+      return '<div class="sg-item" data-name="'+esc(it.en.name)+'"><span class="sg-kw">'+esc(it.kw)+'</span>'+esc(it.en.name)+'<span class="sg-sub">'+esc(lv.label)+' · '+esc(it.en.dept)+'</span></div>';
+    }).join('');
+    sugEl.innerHTML = html;
+    sugEl.className = "suggest show";
+  }
+
+  function doSearch(q){
+    var rawQ = (q!=null?q:String(document.getElementById("q").value));
+    var res = searchEntries(rawQ);
+    renderResults(res.list, rawQ);
+    sugEl.className="suggest";
+    switchTo("search");
+  }
+
+  /* ---------- 热门标签 / 事件绑定 ---------- */
+  function bindChips(container, cb){
+    container.addEventListener("click", function(ev){
+      var t = ev.target;
+      var d = t.getAttribute && t.getAttribute("data-w");
+      if(d){ cb(d); }
+      else if(t.parentNode && t.parentNode.getAttribute && t.parentNode.getAttribute("data-w")){
+        cb(t.parentNode.getAttribute("data-w"));
+      }
+    });
+  }
+  document.getElementById("chips").innerHTML = hotWords.map(function(w){return '<span class="chip" data-w="'+esc(w)+'">'+esc(w)+'</span>';}).join('');
+  bindChips(document.getElementById("chips"), function(w){
+    document.getElementById("q").value = w;
+    doSearch(w);
+    window.scrollTo({top:document.getElementById("viewSearch").offsetTop-8, behavior:"smooth"});
+  });
+
+  var qEl = document.getElementById("q");
+  var debTimer=null;
+  qEl.addEventListener("input", function(){
+    var v = this.value;
+    clearTimeout(debTimer);
+    debTimer = setTimeout(function(){ v ? showSuggest(v) : (sugEl.className="suggest"); }, 120);
+  });
+  qEl.addEventListener("focus", function(){ if(this.value) showSuggest(this.value); });
+  document.addEventListener("click", function(ev){
+    if(!sugEl.contains(ev.target) && ev.target!==qEl) sugEl.className="suggest";
+  });
+  sugEl.addEventListener("click", function(ev){
+    var item = ev.target.closest ? ev.target.closest(".sg-item") : null;
+    if(!item){ var t=ev.target; if(t && t.className && String(t.className).indexOf("sg-item")>-1) item=t; }
+    if(!item) return;
+    var name = item.getAttribute("data-name");
+    document.getElementById("q").value = name;
+    var res = searchEntries(name);
+    renderResults(res.list, name);
+    sugEl.className="suggest";
+  });
+  qEl.addEventListener("keydown", function(ev){
+    if(ev.key==="Enter"){ ev.preventDefault(); doSearch(); }
+  });
+  document.getElementById("btnSearch").addEventListener("click", function(){ doSearch(); });
+
+  // 结果区/无结果提示里的热门 chips 委托
+  bindChips(resultsEl, function(w){
+    document.getElementById("q").value = w;
+    doSearch(w);
+  });
+
+  /* ---------- 诊断反查（点诊断词 → 列出库中所有关联症状） ---------- */
+  function dxBase(s){ return norm(stripParen(s)); }
+  function dxHit(en, nb){
+    // 命中条件：诊断名/症状名/同义词 去掉括号注释后与目标名 相等 或 双向包含
+    var arr, i, b;
+    var pools = [ [en.name], en.keywords||[], en.diagnoses||[] ];
+    for(var p=0;p<pools.length;p++){
+      arr = pools[p];
+      for(i=0;i<arr.length;i++){
+        b = dxBase(arr[i]);
+        if(!b) continue;
+        if(b===nb) return true;
+        if(nb.length>=2 && b.length>=2 && (b.indexOf(nb)>-1 || nb.indexOf(b)>-1)) return true;
+      }
+    }
+    return false;
+  }
+  function lvDot(l){ return l==="red"?"d-dot":(l==="yellow"?"y-dot":"g-dot"); }
+
+  var ov = document.getElementById("dxOverlay");
+  var dxBody = document.getElementById("dxBody");
+  function closeDx(){ ov.className = "overlay"; }
+  function openDx(dxText){
+    var nb = dxBase(dxText);
+    var hits = [];
+    if(nb){ hits = D.entries.filter(function(en){ return dxHit(en, nb); }); }
+    var html = '<div class="dx-t">'+esc(dxText)+'</div>'+
+               '<div class="dx-sub">该诊断在导诊知识库中可能与以下症状相互关联（点按跳转到对应卡片）；无标记项为「待排查」方向参考。</div>';
+    if(hits.length){
+      html += '<div class="dx-sec"><div class="dx-sec-t">关联症状 · 共 '+hits.length+' 条（'+esc(dxText)+' 会在这些主诉中被考虑）</div><div class="dx-links">'+
+              hits.map(function(en){
+                return '<button type="button" class="dx-link" data-id="'+esc(en.id)+'" data-name="'+esc(en.name)+'">'+
+                       '<span class="dx-dot '+lvDot(en.level)+'"></span>'+esc(en.name)+'</button>';
+              }).join('')+'</div></div>';
+      var depts = [], seen = {};
+      hits.forEach(function(en){ var d=stripParen(en.dept); if(d&&!seen[d]){seen[d]=1;depts.push(en.dept);} });
+      if(depts.length){
+        html += '<div class="dx-sec"><div class="dx-sec-t">就医科室提示</div>'+
+                '<div class="dept-notes"><b>建议首诊：</b>'+depts.slice(0,4).map(esc).join(' · ')+'</div></div>';
+      }
+    }else{
+      html += '<div class="dx-sec"><div class="dx-empty">当前库中暂无其他症状条目直接关联「'+esc(dxText)+'」。<br>该诊断仅作为本条目的可能方向之一，请以医生面诊为准；也可尝试在顶部搜索框输入症状名反向查找。</div></div>';
+    }
+    html += '<div class="dx-sec" style="font-size:11.5px;color:var(--ink-3);margin-top:16px">以上为科普参考与分诊学习用途，不能替代医生诊断。</div>';
+    dxBody.innerHTML = html;
+    ov.className = "overlay show";
+  }
+  function jumpToEntry(id, name){
+    closeDx();
+    switchTo("search");
+    doSearch(name);
+    setTimeout(function(){
+      var el = document.getElementById("e-"+id);
+      if(el){
+        el.scrollIntoView({behavior:"smooth", block:"start"});
+        el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash");
+      }
+    }, 60);
+  }
+  // 结果卡片里的诊断按钮（事件委托）
+  resultsEl.addEventListener("click", function(ev){
+    var el = ev.target.closest ? ev.target.closest(".dx") : null;
+    if(el && el.getAttribute("data-dx")) openDx(el.getAttribute("data-dx"));
+  });
+  // 弹层内部：点关联症状跳转 / 关闭
+  dxBody.addEventListener("click", function(ev){
+    var el = ev.target.closest ? ev.target.closest(".dx-link") : null;
+    if(el && el.getAttribute("data-id") && el.getAttribute("data-name")){
+      jumpToEntry(el.getAttribute("data-id"), el.getAttribute("data-name"));
+    }
+  });
+  document.getElementById("dxClose").addEventListener("click", closeDx);
+  ov.addEventListener("click", function(ev){ if(ev.target===ov) closeDx(); });
+  document.addEventListener("keydown", function(ev){ if(ev.key==="Escape") closeDx(); });
+
+  /* ---------- 科室浏览 ---------- */
+  var groups = ["内科","外科","妇产儿科","五官口腔皮肤","急诊与中心"];
+  var deptListEl = document.getElementById("deptList");
+  function renderDepts(){
+    var html = "";
+    groups.forEach(function(g){
+      var dps = D.departments.filter(function(dp){return dp.group===g;});
+      if(!dps.length) return;
+      html += '<div class="grp"><div class="grp-t">'+g+'</div><div class="grp-cards">';
+      dps.forEach(function(dp){
+        var list = deptEntries[dp.key] || [];
+        html += '<div class="dpt"><div class="dn">'+esc(dp.name)+'</div><div class="di">'+esc(dp.intro)+'</div><div class="links">';
+        if(list.length){
+          list.forEach(function(en){
+            html += '<button class="mini-chip" data-w="'+esc(en.name)+'">'+esc(en.name)+'</button>';
+          });
+        }else{
+          html += '<span class="mini-empty">暂无导诊条目，可直接挂该科门诊</span>';
+        }
+        html += '</div></div>';
+      });
+      html += '</div></div>';
+    });
+    deptListEl.innerHTML = html;
+    document.getElementById("deptStat").textContent = "共收录科室/门诊 "+D.departments.length+" 个，症状导诊条目 "+D.entries.length+" 条（点击某科下的症状可跳转查询）。";
+  }
+  // mini-chip 按钮独立绑定（避免与上方通用委托重复触发）
+  deptListEl.addEventListener("click", function(ev){
+    var t = ev.target;
+    if(t && t.tagName==="BUTTON" && t.className==="mini-chip" && t.getAttribute("data-w")){
+      var w = t.getAttribute("data-w");
+      document.getElementById("q").value = w;
+      doSearch(w);
+      window.scrollTo({top:0, behavior:"smooth"});
+    }
+  });
+
+  /* ---------- Tab 切换 ---------- */
+  function switchTo(view){
+    document.getElementById("viewSearch").style.display = view==="search" ? "" : "none";
+    document.getElementById("viewDepts").style.display = view==="depts" ? "" : "none";
+    document.getElementById("tabSearch").className = "tab"+(view==="search"?" on":"");
+    document.getElementById("tabDepts").className = "tab"+(view==="depts"?" on":"");
+  }
+  document.querySelectorAll(".tab").forEach(function(t){
+    t.addEventListener("click", function(){
+      switchTo(t.getAttribute("data-view"));
+      if(t.getAttribute("data-view")==="depts") renderDepts();
+    });
+  });
+
+  /* ---------- 首屏 ---------- */
+  function init(){
+    var nE = D.entries.length, nD = D.departments.length;
+    document.getElementById("statline").innerHTML = "共收录 <b>"+nE+"</b> 条症状导诊条目 · 覆盖 <b>"+nD+"</b> 个科室/门诊（数据更新："+esc(D.meta.updated)+"，参考医院官网科室公示）";
+    document.getElementById("footMeta").textContent = "科室与门诊名称整理自四川省人民医院官网（samsph.cn）科室公示（2026-09 核对），共 " + nD + " 个科室/门诊、" + nE + " 条导诊记录；如需调整或补充，直接编辑 data.js 中的 entries / departments 数组即可。";
+    // 默认展示一个示例结果，帮助理解用法
+    var demo = searchEntries("发烧");
+    renderResults(demo.list, "发烧");
+    document.getElementById("q").value = "";
+  }
+  init();
+})();
+</script>
+</body>
+</html>
