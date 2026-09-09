@@ -874,19 +874,19 @@
 
   /* ================= 人体部位点选 ================= */
   var BM = {
-    head:{label:"头面部 / 神经", ids:["headache","vertigo","insomnia","memory-loss","facial-paralysis","seizure"]},
-    eye:{label:"眼", ids:["eye","vision-blur","eye-floaters","lid-edema"]},
-    ear:{label:"耳", ids:["ear","hearing-loss","vertigo"]},
-    nose:{label:"鼻", ids:["nose","epistaxis","snoring"]},
-    oral:{label:"口 / 牙", ids:["tooth","mouth-ulcer","gum-bleeding"]},
-    neck:{label:"咽喉 / 颈部", ids:["sore-throat","dysphagia","goiter","thyroid-nodule","lymphadenopathy","snoring"]},
-    chest:{label:"胸 / 心肺", ids:["chestpain","palpitation","cough","dyspnea","hemoptysis","chronic-cough","mass","breast-pain"]},
-    abdomen:{label:"腹 / 盆腔", ids:["abdominal-pain","bloating","gerd","nausea","diarrhea","constipation","hematochezia","jaundice","gallstone","hernia","dysmenorrhea","menstrual","pregnancy"]},
-    back:{label:"腰背", ids:["backpain","neckpain","renal-colic","sciatica","osteoporosis"]},
-    arm:{label:"上肢", ids:["numbness","frozen-shoulder","joint-pain","morning-stiffness","tremor"]},
-    leg:{label:"下肢", ids:["sciatica","gout","heel-pain","calf-swelling","varicose","joint-pain"]},
-    skin:{label:"皮肤 / 毛发", ids:["rash","eczema","acne","alopecia","hives","herpes-zoster","pigment-change","nail-fungus","easy-bruise"]},
-    general:{label:"全身性", ids:["fever","fatigue","night-sweat","weight-loss","anemia","obesity"]}
+    head:{label:"头面部 / 神经", ids:["headache","vertigo","insomnia","memory-loss","facial-paralysis","seizure","stroke","syncope","head-injury","anxiety","depression"]},
+    eye:{label:"眼", ids:["eye","vision-blur","eye-floaters","lid-edema","dry-eye","stye","epiphora","conjunctivitis","squint"]},
+    ear:{label:"耳", ids:["ear","hearing-loss","vertigo","tinnitus","otitis-media","otitis-externa","earwax-impact","motion-sickness"]},
+    nose:{label:"鼻", ids:["nose","epistaxis","snoring","allergic-rhinitis","anosmia","sinusitis","adenoid-hypertrophy"]},
+    oral:{label:"口 / 牙", ids:["tooth","mouth-ulcer","gum-bleeding","dry-mouth","halitosis","wisdom-tooth","tmj-disorder","tooth-sensitivity"]},
+    neck:{label:"咽喉 / 颈部", ids:["throat","dysphagia","goiter","thyroid-nodule","lymphadenopathy","snoring","tonsillitis","stiff-neck"]},
+    chest:{label:"胸 / 心肺", ids:["chestpain","palpitation","cough","dyspnea","hemoptysis","chronic-cough","child-cough","mass","breast-pain"]},
+    abdomen:{label:"腹 / 盆腔", ids:["abdominal-pain","bloating","gerd","nausea","diarrhea","constipation","hematochezia","jaundice","gallstone","hernia","dysmenorrhea","menstrual","pregnancy","child-abdomen","gyne-discharge","dysuria","incontinence","prostate-symptoms","child-bedwetting","infertility","fetal-movement"]},
+    back:{label:"腰背 / 肾", ids:["backpain","neckpain","renal-colic","sciatica","osteoporosis","acute-lumbago","scoliosis-kyphosis","hematuria","proteinuria"]},
+    arm:{label:"上肢", ids:["numbness","frozen-shoulder","joint-pain","morning-stiffness","tremor","tennis-elbow","carpal-tunnel","trigger-finger","tenosynovitis","trauma"]},
+    leg:{label:"下肢", ids:["sciatica","gout","heel-pain","calf-swelling","varicose","joint-pain","knee-pain","ankle-sprain","leg-cramp","hip-pain","trauma"]},
+    skin:{label:"皮肤 / 毛发", ids:["rash","eczema","acne","alopecia","hives","herpes-zoster","pigment-change","nail-fungus","easy-bruise","child-rash"]},
+    general:{label:"全身性", ids:["fever","fever-child","fatigue","night-sweat","weight-loss","anemia","obesity","emergency","physical-exam","hypertension","hyperlipidemia","diabetes-suspect","edema","menopause","child-growth"]}
   };
   var bmQuickOrder = [["head","头面"],["eye","眼"],["ear","耳"],["nose","鼻"],["oral","口/牙"],["neck","咽喉颈"],["chest","胸"],["abdomen","腹/盆腔"],["back","腰背"],["arm","上肢"],["leg","下肢"],["skin","皮肤"],["general","全身"]];
   var bmFigEl = document.getElementById("bmSvg");

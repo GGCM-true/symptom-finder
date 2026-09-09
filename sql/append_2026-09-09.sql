@@ -1,78 +1,15 @@
 -- ============================================================
--- 省医·症状导诊知识库 · 一键导入(合并版)
--- 执行: mysql --default-character-set=utf8mb4 -uroot -p < sql/import_all.sql
+-- 省医 · 症状导诊知识库  增量追加脚本 (MySQL 8.0+, utf8mb4)
+-- 适用: 已导入过 105 条旧版数据的 shengyi_triage 库
+-- 特性: 全部 INSERT IGNORE —— 已存在的行自动跳过,可重复执行,不删任何数据
+-- 执行: mysql --default-character-set=utf8mb4 -uroot -p < sql/append_2026-09-09.sql
+--        或在 DBeaver 中打开本文件后执行
 -- ============================================================
--- 生成自 tools/export_mysql.js · data.js 数据源
--- ============================================================
--- 省医 · 症状导诊知识库  建库建表脚本 (MySQL 8.0+, utf8mb4)
--- 数据源: ../data.js(2026-09 核对省医院官网 samsph.cn)
--- 注意: 会先删除同名库 shengyi_triage 再重建,仅影响本库
--- ============================================================
-DROP DATABASE IF EXISTS shengyi_triage;
-CREATE DATABASE shengyi_triage DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
-USE shengyi_triage;
-
--- 1) 科室/门诊目录
-CREATE TABLE departments (
-  dept_key   VARCHAR(32)  NOT NULL COMMENT '科室唯一键',
-  name       VARCHAR(100) NOT NULL COMMENT '科室显示名(官网口径)',
-  dept_group VARCHAR(32)  NOT NULL COMMENT '分组:内科/外科/妇产儿科/五官口腔皮肤/急诊与中心',
-  intro      TEXT         NULL     COMMENT '科室简介',
-  PRIMARY KEY (dept_key)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='科室目录';
-
--- 2) 分诊级别字典
-CREATE TABLE triage_levels (
-  level_key VARCHAR(16) NOT NULL COMMENT 'green/yellow/red',
-  label     VARCHAR(32) NOT NULL COMMENT '显示名',
-  hint      VARCHAR(64) NOT NULL COMMENT '提示语',
-  PRIMARY KEY (level_key)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='分诊级别';
-
--- 3) 知识库元信息
-CREATE TABLE triage_meta (
-  meta_key   VARCHAR(32) NOT NULL,
-  meta_value TEXT        NULL,
-  PRIMARY KEY (meta_key)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='知识库元信息(医院/地址/更新日期等)';
-
--- 4) 症状导诊条目主表
-CREATE TABLE triage_entries (
-  entry_id     VARCHAR(48)  NOT NULL COMMENT '条目ID',
-  name         VARCHAR(64)  NOT NULL COMMENT '主症状名',
-  category     VARCHAR(32)  NOT NULL COMMENT '内容分类(发热与感染/呼吸系统…)',
-  population   VARCHAR(32)  NOT NULL COMMENT '适用人群',
-  dept_key     VARCHAR(32)  NOT NULL COMMENT '首诊科室 key → departments',
-  dept_display VARCHAR(100) NOT NULL COMMENT '首诊科室显示名(保留括号备注)',
-  dept_note    TEXT         NULL     COMMENT '科室就诊说明',
-  level_key    VARCHAR(16)  NOT NULL COMMENT '分诊级别 → triage_levels',
-  diagnoses    JSON         NOT NULL COMMENT '可能的专业病名数组',
-  alts         JSON         NOT NULL COMMENT '备选科室显示名数组',
-  tips         JSON         NOT NULL COMMENT '就诊提示数组',
-  science      TEXT         NOT NULL COMMENT '疾病科普(100-200字)',
-  redline      TEXT         NOT NULL COMMENT '急诊红线提示',
-  PRIMARY KEY (entry_id),
-  KEY idx_dept (dept_key),
-  KEY idx_level (level_key),
-  CONSTRAINT fk_entry_dept  FOREIGN KEY (dept_key)  REFERENCES departments (dept_key),
-  CONSTRAINT fk_entry_level FOREIGN KEY (level_key) REFERENCES triage_levels (level_key)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='症状导诊条目';
-
--- 5) 症状同义词/搜索词(展开表,便于 LIKE / 全文检索)
-CREATE TABLE triage_keywords (
-  entry_id VARCHAR(48) NOT NULL,
-  keyword  VARCHAR(64) NOT NULL,
-  PRIMARY KEY (entry_id, keyword),
-  KEY idx_keyword (keyword),
-  CONSTRAINT fk_kw_entry FOREIGN KEY (entry_id) REFERENCES triage_entries (entry_id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='症状搜索词';
-
--- schema 完毕
 
 USE shengyi_triage;
 
--- 科室目录
-INSERT INTO departments (dept_key, name, dept_group, intro) VALUES
+-- 1) 科室目录(幂等追加)
+INSERT IGNORE INTO departments (dept_key, name, dept_group, intro) VALUES
   ('fever', '感染科门诊 / 发热门诊', '内科', '诊治发热查因、呼吸道/肠道等感染性疾病及肝炎等肝病；本部设独立 24 小时发热门诊，成人与儿童均可前往。'),
   ('resp', '呼吸与危重症医学科门诊', '内科', '诊治感冒、肺炎、支气管炎、哮喘、慢阻肺等呼吸系统疾病。'),
   ('cardio', '心血管内科门诊', '内科', '诊治高血压、冠心病、心律失常、心衰等心血管疾病，设有房颤、晕厥、心衰等专病门诊。'),
@@ -105,14 +42,14 @@ INSERT INTO departments (dept_key, name, dept_group, intro) VALUES
   ('rehab', '康复医学科（川港康复中心）', '急诊与中心', '针对颈肩腰腿痛、骨折术后、脑卒中后遗症的康复评估与治疗，多为其他科室转诊后介入。'),
   ('pain', '疼痛科门诊', '急诊与中心', '诊治长期难治性疼痛：慢性头痛、带状疱疹后神经痛、顽固性颈肩腰腿痛等。');
 
--- 分诊级别
-INSERT INTO triage_levels (level_key, label, hint) VALUES
+-- 2) 分诊级别字典(幂等追加)
+INSERT IGNORE INTO triage_levels (level_key, label, hint) VALUES
   ('green', '门诊就诊', '多数情况可预约普通门诊，先别急'),
   ('yellow', '建议尽快就诊', '尽快安排挂号，避免拖延'),
   ('red', '立即急诊', '不要排队等门诊，直接去急诊医学科（急救中心）');
 
--- 元信息
-INSERT INTO triage_meta (meta_key, meta_value) VALUES
+-- 3) 元信息(幂等追加; 注: 不覆盖已存在的 updated,若需更新请手动 UPDATE triage_meta)
+INSERT IGNORE INTO triage_meta (meta_key, meta_value) VALUES
   ('hospital', '四川省医学科学院·四川省人民医院'),
   ('shortName', '省医'),
   ('campus', '本部（青羊院区）'),
@@ -122,8 +59,11 @@ INSERT INTO triage_meta (meta_key, meta_value) VALUES
   ('updated', '2026-09-09'),
   ('disclaimer', '本工具为「症状→科室」门诊分诊的科普参考，由公开医学资料与三甲医院分诊惯例整理，不能替代医生面诊；急危重症请立即拨打 120 或前往急诊医学科（急救中心）。');
 
--- 症状导诊条目(53)
-INSERT INTO triage_entries
+-- 3b) 刷新数据更新时间(INSERT IGNORE 不会覆盖已存在的行,故单独 UPDATE)
+UPDATE triage_meta SET meta_value = '2026-09-09' WHERE meta_key = 'updated';
+
+-- 4) 症状导诊条目(幂等追加,当前共 135 条)
+INSERT IGNORE INTO triage_entries
   (entry_id, name, category, population, dept_key, dept_display, dept_note, level_key,
    diagnoses, alts, tips, science, redline) VALUES
   ('fever', '发热', '发热与感染', '通用', 'fever', '感染科门诊（发热门诊）', '本部设独立 24 小时发热门诊（近急救中心，成人与儿童均可），夜间发热可直接前往。', 'yellow', '["上呼吸道感染","流行性感冒","急性咽炎","泌尿道感染（待排查）"]', '["呼吸与危重症医学科门诊","儿科门诊（≤14 岁）","急诊医学科（急症）"]', '["成人发热先居家测体温、多饮水；38.5℃ 以上可按说明使用退热药。","发热超过 3 天未退，或伴寒战、皮疹、关节痛、尿痛，建议到感染科查明原因。","普通感冒样发热可在呼吸内科/全科就诊；14 岁以下儿童挂儿科门诊。"]', '发热指体温超过 37.3℃，多数由病毒或细菌感染引起，如感冒、流感、咽炎等；体温 37.3–38℃ 属低热。发热本身是身体的防御反应，关键要找病因。', '体温 ≥39.5℃、高热抽搐、精神萎靡、呼吸急促、身上出现出血点/瘀斑，请立即到急诊医学科或发热门诊。'),
@@ -262,8 +202,8 @@ INSERT INTO triage_entries
   ('leg-cramp', '夜间腿抽筋（小腿痉挛）', '骨科运动', '通用', 'ortho', '骨科门诊', '频繁抽筋伴行走后腿痛需排查血管问题（可看血管外科）。', 'green', '["良性夜间腿抽筋","电解质紊乱（低钙/低镁）","下肢血管病变（需排查）","腰椎病神经刺激"]', '["血管外科门诊","神经内科门诊","全科医疗科门诊"]', '["发作时立即伸直膝关节、足尖向身体方向勾（背伸），多可迅速缓解。","睡前拉伸小腿、注意保暖、适量饮水与补钙镁。","频繁抽筋且伴行走后腿痛发凉者，查下肢血管。"]', '夜间腿抽筋是小腿肌肉突然不自主强直收缩，多与疲劳、受凉、脱水、电解质失衡及久坐血液循环差有关，多数为良性，但频繁发作需排查血管与神经病因。', '抽筋伴小腿突发剧痛肿胀、皮温升高（警惕深静脉血栓），尽快血管外科/急诊就诊。'),
   ('hip-pain', '髋部 / 大腿根痛', '骨科运动', '成人（中老年高发）', 'ortho', '骨科门诊', '长期使用激素、酗酒者出现髋痛需重点排查股骨头坏死。', 'yellow', '["髋关节骨关节炎","股骨头坏死（需排查）","髋关节盂唇损伤","腹股沟疝（需鉴别）","坐骨神经痛"]', '["风湿免疫科门诊","胃肠外科门诊（排除腹股沟疝）","疼痛科门诊"]', '["减少负重与深蹲动作，疼痛期可扶拐减轻关节压力。","有激素使用史、酗酒史者尽早做髋关节 MRI 排查股骨头坏死。","中老年髋痛伴摔倒史需排除股骨颈骨折。"]', '髋部（胯骨/大腿根）疼痛可由髋关节本身病变（骨关节炎、股骨头坏死、盂唇损伤）或邻近结构问题引起，表现为走路、抬腿、盘腿时腹股沟区疼痛，可伴跛行。', '跌倒后髋部剧痛、患肢无法站立或明显缩短外旋（股骨颈骨折可能），立即急诊。');
 
--- 搜索词(主症状名 + 同义词)
-INSERT INTO triage_keywords (entry_id, keyword) VALUES
+-- 5) 症状搜索词(幂等追加)
+INSERT IGNORE INTO triage_keywords (entry_id, keyword) VALUES
   ('fever', '发热'),
   ('fever', '发烧'),
   ('fever', '体温高'),
@@ -1226,4 +1166,4 @@ INSERT INTO triage_keywords (entry_id, keyword) VALUES
   ('hip-pain', '走路胯疼'),
   ('hip-pain', '腹股沟痛');
 
--- data 完毕
+-- 增量脚本完毕(可安全重复执行)
