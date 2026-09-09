@@ -22,7 +22,9 @@
   .wrap{max-width:920px;margin:0 auto;padding:0 14px 40px}
   header{background:var(--teal);color:#fff}
   .head-inner{max-width:920px;margin:0 auto;padding:18px 14px 14px;display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
-  .brand{display:flex;align-items:center;gap:10px}
+  .brand{display:flex;align-items:center;gap:10px;cursor:pointer;transition:opacity .15s}
+  .brand:hover{opacity:.85}
+  .brand:active{opacity:.7}
   .logo{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-weight:500;font-size:16px;flex:none}
   h1{font-size:19px;font-weight:500;letter-spacing:.5px}
   .sub{font-size:12px;opacity:.85;margin-top:1px}
@@ -141,7 +143,7 @@
 <body data-page-node-id="YZQvVSTy3EUDNgyfd4Pp7B">
 <header data-page-node-id="ds8GqSyh4PyVH3QueGieM1">
   <div class="head-inner" data-page-node-id="SqiojoOZSkcX9nUjfNdJqo">
-    <div class="brand" data-page-node-id="4WUVos3zzfRphAguzENN5F">
+    <div class="brand" id="brandHome" title="点击返回首页" data-page-node-id="4WUVos3zzfRphAguzENN5F">
       <div class="logo" data-page-node-id="bW6mQC6NFG9vtmOhGpXVNx">导诊</div>
       <div data-page-node-id="La44bdx4Hl9uBi9W5ezZag">
         <h1 data-page-node-id="IpLRTL5fZMhxKB0nn8K5ls">省医 · 症状导诊</h1>
@@ -511,6 +513,16 @@
       if(t.getAttribute("data-view")==="depts") renderDepts();
     });
   });
+
+  /* ---------- 点击头部品牌区返回首页 ---------- */
+  function goHome(){
+    switchTo("search");
+    document.getElementById("q").value = "";
+    var demo = searchEntries("发烧");
+    renderResults(demo.list, "发烧");
+    window.scrollTo({top:0, behavior:"smooth"});
+  }
+  document.getElementById("brandHome").addEventListener("click", goHome);
 
   /* ---------- 首屏 ---------- */
   function init(){
